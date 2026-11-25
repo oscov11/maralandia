@@ -24,11 +24,11 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 .layer{position:absolute;inset:0}
 #bg svg,#map svg{width:100%;height:100%;display:block}
 #objs{pointer-events:none}
-.obj{position:absolute;pointer-events:none;touch-action:none}
+.obj{left:0;top:0;position:absolute;pointer-events:none;touch-action:none}
 .obj svg *{pointer-events:visiblePainted}
 .obj svg{width:100%;height:100%;display:block;overflow:visible}
 .in{position:relative;width:100%;height:100%;transform-origin:50% 100%;transition:transform .15s}
-.obj.lifted{filter:drop-shadow(0 22px 12px rgba(60,40,30,.28))}
+.obj.lifted{will-change:transform}
 .obj.lifted>.in{transform:scale(1.1)}
 .jmp>.in{animation:jmp .55s ease-out}
 .wig>.in{animation:wig .45s ease-in-out}
@@ -91,7 +91,7 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 #rot svg{width:40vw;animation:rt 2s ease-in-out infinite}
 @keyframes rt{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
 @media (orientation:portrait){#rot{display:flex}}
-.loc{cursor:pointer;transform-box:fill-box;transform-origin:50% 100%;animation:bob 2.6s ease-in-out infinite}
+.loc{cursor:pointer}
 .loc:nth-of-type(2){animation-delay:-.9s}.loc:nth-of-type(3){animation-delay:-1.7s}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 #reset{position:absolute;left:30px;top:30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;pointer-events:auto}
@@ -101,12 +101,12 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 #light{position:absolute;inset:0;pointer-events:none;z-index:140000;overflow:visible}
 #light .vig{left:-320px;right:-320px}
 #stage{width:1600px}
-.vig{position:absolute;inset:0;background:radial-gradient(ellipse 75% 70% at 50% 45%,transparent 55%,rgba(90,45,20,.28));mix-blend-mode:multiply}
+.vig{position:absolute;inset:0;background:radial-gradient(ellipse 75% 70% at 50% 45%,transparent 55%,rgba(90,45,20,.28));}
 .vig.warm{background:radial-gradient(ellipse 80% 75% at 60% 40%,transparent 55%,rgba(40,80,20,.22))}
 .vig.cool{background:radial-gradient(ellipse 80% 75% at 50% 40%,transparent 55%,rgba(40,70,130,.22))}
-.beam{position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,248,210,.55),rgba(255,248,210,0) 70%);clip-path:polygon(600px 130px,940px 130px,1180px 900px,560px 900px);mix-blend-mode:screen;animation:beam 7s ease-in-out infinite alternate}
+.beam{position:absolute;inset:0;background:linear-gradient(170deg,rgba(255,248,210,.55),rgba(255,248,210,0) 70%);clip-path:polygon(600px 130px,940px 130px,1180px 900px,560px 900px);opacity:.6}
 @keyframes beam{from{opacity:.7}to{opacity:1}}
-.glow{position:absolute;border-radius:50%;mix-blend-mode:screen;pointer-events:none}
+.glow{position:absolute;border-radius:50%;pointer-events:none}
 .glow.fire{background:radial-gradient(circle,rgba(255,170,60,.55),rgba(255,140,40,0) 65%);animation:fireg 1.3s ease-in-out infinite alternate}
 @keyframes fireg{0%{opacity:.6;transform:scale(.95)}50%{opacity:.9}100%{opacity:.7;transform:scale(1.05)}}
 .glow.sun{background:radial-gradient(circle,rgba(255,240,170,.6),rgba(255,240,170,0) 65%)}
@@ -118,18 +118,18 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 .bfly svg{width:100%;height:100%;animation:flap .25s ease-in-out infinite alternate;transform-origin:50% 50%}
 @keyframes flap{from{transform:scaleX(1)}to{transform:scaleX(.35)}}
 @keyframes bfly{0%,100%{transform:translate(0,0)}25%{transform:translate(160px,-120px)}50%{transform:translate(320px,-30px)}75%{transform:translate(140px,60px)}}
-.drift{animation:drift 100s linear infinite}
+.drift{}
 @keyframes drift{from{transform:translateX(-200px)}to{transform:translateX(1800px)}}
-.spin{animation:spin 6s linear infinite;transform-box:view-box;transform-origin:0 0}
+.spin{transform-box:view-box;transform-origin:0 0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.br .in>svg{animation:br 3.4s ease-in-out infinite;animation-delay:var(--bd,0s);transform-origin:50% 100%}
+.br .in>svg{animation-delay:var(--bd,0s);transform-origin:50% 100%}
 @keyframes br{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,.985)}}
 .swim .in>svg{animation:bobw 2.2s ease-in-out infinite;animation-delay:var(--bd,0s);transform-origin:50% 80%}
 @keyframes bobw{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(9px) rotate(2deg)}}
 .hspin,.globespin{transform-box:view-box;animation:hsp .43s linear 3}.hspin{transform-origin:65px 65px}.globespin{transform-origin:50px 56px}
 @keyframes hsp{to{transform:rotate(360deg)}}
-.wave{animation:wave 3.2s ease-in-out infinite alternate}@keyframes wave{from{transform:translateX(-24px)}to{transform:translateX(24px)}}
-.wave2{animation:wave2 2.6s ease-in-out infinite alternate}@keyframes wave2{from{transform:translate(-30px,-4px)}to{transform:translate(30px,4px)}}
+.wave{}@keyframes wave{from{transform:translateX(-24px)}to{transform:translateX(24px)}}
+.wave2{}@keyframes wave2{from{transform:translate(-30px,-4px)}to{transform:translate(30px,4px)}}
 #stars{position:absolute;right:178px;top:36px;height:96px;padding:0 34px 0 18px;border-radius:48px;background:#fff;border:6px solid #ffe066;box-shadow:0 8px 0 rgba(60,40,30,.2);display:flex;align-items:center;gap:10px;font:700 56px Fredoka,"Arial Rounded MT Bold",sans-serif;color:#4a3b36;pointer-events:none}
 #stars svg{width:70px;height:70px}
 #hand{position:absolute;width:110px;height:130px;pointer-events:none;z-index:350000;opacity:0;transform-origin:40px 4px}
@@ -776,7 +776,7 @@ const els=new Map();
 const sz=o=>o.k==='char'?{w:140,h:o.sit?225:262}:{w:K[o.k].w,h:K[o.k].h};
 function inner(o){const k=K[o.k];if(o.k==='char')return charSVG(o);const d=(typeof k.d==='function'?k.d(o):k.d)+(k.cat==='animal'?illSVG(o):'');return k.swing?d+`<div class="swingseat">${k.seat}</div>`:d}
 function zOf(o){if(K[o.k]&&K[o.k].flat)return 2;if(o.sit){const f=byId(o.sit);return f?f.y*10+3:o.y*10}if(o.on){const f=byId(o.on);return f?f.y*10+5:o.y*10}return Math.round(o.y*10)}
-function place(o){const e=els.get(o.id);if(!e)return;const s=sz(o);e.style.left=(o.x-s.w/2)+'px';e.style.top=(o.y-s.h)+'px';e.style.width=s.w+'px';e.style.height=s.h+'px';if(!e.classList.contains('lifted'))e.style.zIndex=zOf(o)}
+function place(o){const e=els.get(o.id);if(!e)return;const s=sz(o);e.style.transform=`translate3d(${o.x-s.w/2}px,${o.y-s.h}px,0)`;if(e._w!==s.w||e._h!==s.h){e._w=s.w;e._h=s.h;e.style.width=s.w+'px';e.style.height=s.h+'px'}if(!e.classList.contains('lifted'))e.style.zIndex=zOf(o)}
 function draw(o){let e=els.get(o.id);if(!e){e=document.createElement('div');e.className='obj';e.dataset.id=o.id;e.innerHTML='<div class="in"></div>';objL.appendChild(e);els.set(o.id,e)}e.firstChild.innerHTML=shade(inner(o));if(o.k==='char'||K[o.k].cat==='animal'){e.classList.add('br');e.style.setProperty('--bd',(-(o.id*0.73)%3.4)+'s')}e.classList.toggle('swim',!!o.swim);if(K[o.k].paint)boardCanvas(o);place(o)}
 const redraw=draw;
 function cls(o,c){const e=els.get(o.id);if(!e)return;e.classList.remove(c);void e.offsetWidth;e.classList.add(c);setTimeout(()=>e.classList.remove(c),600)}
@@ -820,7 +820,7 @@ let scale=1;
 let SW=1600,OFF=0;
 function fitSvg(){for(const sv of [bg.firstElementChild,mapL.firstElementChild])if(sv&&sv.tagName.toLowerCase()==='svg'){sv.setAttribute('viewBox',`${-OFF} 0 ${SW} 900`);sv.setAttribute('preserveAspectRatio','xMidYMid slice')}}
 function vpSize(){const v=window.visualViewport;const w=v?v.width:innerWidth,h=v?v.height:innerHeight;let W2=Math.min(w,document.documentElement.clientWidth||w),H2=Math.min(h,document.documentElement.clientHeight||h);try{const a=screen.width,b=screen.height;if(a>0&&b>0){const sh=Math.min(a,b),lg=Math.max(a,b);if(W2>H2){H2=Math.min(H2,sh);W2=Math.min(W2,lg)}else{H2=Math.min(H2,lg);W2=Math.min(W2,sh)}}}catch(e){}return{w:W2,h:H2}}
-function fit(){const V=vpSize(),innerWidth=V.w,innerHeight=V.h;SW=Math.round(Math.min(2200,Math.max(1600,900*innerWidth/innerHeight)));OFF=(SW-1600)/2;scale=Math.min(innerWidth/SW,innerHeight/900);
+function fit(){if(typeof SR!=='undefined')SR=null;const V=vpSize(),innerWidth=V.w,innerHeight=V.h;SW=Math.round(Math.min(2200,Math.max(1600,900*innerWidth/innerHeight)));OFF=(SW-1600)/2;scale=Math.min(innerWidth/SW,innerHeight/900);
  stage.style.width=SW+'px';stage.style.transform=`translate(${(innerWidth-SW*scale)/2}px,${Math.max(0,(innerHeight-900*scale)/2)}px) scale(${scale})`;
  for(const id of ['objs','light']){const e=$(id);e.style.left=OFF+'px';e.style.width='1600px';e.style.right='auto'}
  const c=$('snow');c.width=SW;c.style.width=SW+'px';fitSvg()}
@@ -828,8 +828,8 @@ addEventListener('resize',fit);fit();
 if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 addEventListener('orientationchange',()=>[100,350,800].forEach(t=>setTimeout(fit,t)));
 [300,1000].forEach(t=>setTimeout(fit,t));
-const toStage=e=>{const r=stage.getBoundingClientRect();return{x:(e.clientX-r.left)/scale-OFF,y:(e.clientY-r.top)/scale}};
-const over=(e,id)=>{const r=$(id).getBoundingClientRect();return e.clientX>r.left-20&&e.clientX<r.right+20&&e.clientY>r.top-20&&e.clientY<r.bottom+20};
+const toStage=e=>{const r=stageRect();return{x:(e.clientX-r.left)/scale-OFF,y:(e.clientY-r.top)/scale}};
+const over=(e,id)=>{const r=(id==='bTrash'||id==='bPocket')?btnRects()[id]:$(id).getBoundingClientRect();return e.clientX>r.left-20&&e.clientX<r.right+20&&e.clientY>r.top-20&&e.clientY<r.bottom+20};
 const drags=new Map();let lastChar=null,fsTried=false;
 function tryFS(){if(fsTried)return;fsTried=true;try{const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d)?.catch?.(()=>{});screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}
 objL.addEventListener('pointerdown',e=>{
@@ -846,16 +846,19 @@ function lift(d){const o=d.o;
  o.on=null;d.att=attached(o);d.el.classList.add('lifted');d.el.style.zIndex=99999;d.att.forEach(a=>{const e=els.get(a.id);e&&(e.style.zIndex=99999+(a.sit?2:1))});SND.pop();
  if(o.k==='char'){o._lift=1;draw(o);d.el.classList.add('dangle');if(Math.random()<.5)say(pick(['\u00a1Uiii!','\u00a1All\u00e1 voy!','\u00a1Vuelo!']))}
  closeTray();}
-addEventListener('pointermove',e=>{const d=drags.get(e.pointerId);if(!d)return;const p=toStage(e);
+var SR=null;let pmQ=new Map(),pmRaf=0;function stageRect(){return SR||(SR=stage.getBoundingClientRect())}addEventListener('resize',()=>SR=null);
+addEventListener('pointerdown',()=>{SR=null;RB=null},true);var RB=null;function btnRects(){return RB||(RB={bTrash:$('bTrash').getBoundingClientRect(),bPocket:$('bPocket').getBoundingClientRect()})}
+addEventListener('pointermove',e=>{if(!drags.has(e.pointerId))return;pmQ.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY,pointerId:e.pointerId});if(!pmRaf)pmRaf=requestAnimationFrame(()=>{pmRaf=0;const q=[...pmQ.values()];pmQ.clear();q.forEach(pmHandle)})});
+function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage(e);
  if(d.paint){if(d.noPaint)return;const l=boardLocal(d.o,p),pt={x:l.x-30,y:l.y-30};paintLine(d.o,d.last,pt);d.last=pt;if(Math.random()<.12)SND.chalk();return}
  if(!d.moved&&!d.fixed&&Math.hypot(p.x-d.sx,p.y-d.sy)>14){d.moved=true;lift(d)}
  if(!d.moved)return;
  const nx=Math.max(40,Math.min(1560,p.x-d.offX)),ny=Math.max(140,Math.min(895,p.y-d.offY)),dx=nx-d.o.x,dy=ny-d.o.y;
  shift(d.o,dx,dy);d.att.forEach(a=>shift(a,dx,dy));
  if(K[d.o.k].cat==='food'){const near=objs().find(c=>c.k==='char'&&Math.abs(c.x-p.x)<110&&Math.abs((c.y-sz(c).h+70)-p.y)<150)||null;if(near!==d.near){if(d.near){d.near._eat=false;draw(d.near)}if(near){near._eat=true;draw(near)}d.near=near}}
- $('bTrash').classList.toggle('hot',over(e,'bTrash'));$('bPocket').classList.toggle('hot',over(e,'bPocket'));
-});
-function endDrag(e){const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);
+ const ht=over(e,'bTrash'),hp=over(e,'bPocket');if(ht!==d.ht){d.ht=ht;$('bTrash').classList.toggle('hot',ht)}if(hp!==d.hp){d.hp=hp;$('bPocket').classList.toggle('hot',hp)}
+}
+function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
  if(!d.moved){const t=K[d.o.k].tap;if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t)t(d.o);else{SND.pop();cls(d.o,'wig')}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
@@ -1347,7 +1350,7 @@ function applyNight(){const sw=objs().find(o=>o.k==='interruptor');const Lg=$('l
 
 /* ---------- nieve ---------- */
 const cv=$('snow'),cx=cv.getContext('2d');const flakes=Array.from({length:90},()=>({x:rnd(0,2200),y:rnd(0,900),r:rnd(2,6),s:rnd(.6,1.8),w:rnd(0,6)}));let snowOn=false;
-function snow(){cx.clearRect(0,0,SW,900);if(snowOn){cx.fillStyle='rgba(255,255,255,.9)';for(const f of flakes){f.y+=f.s;f.w+=.02;f.x+=Math.sin(f.w)*.6;if(f.y>905){f.y=-10;f.x=rnd(0,SW)}cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}requestAnimationFrame(snow)}snow();
+let snowWas=true;function snow(){if(!snowOn){if(snowWas){cx.clearRect(0,0,cv.width,900);snowWas=false}requestAnimationFrame(snow);return}snowWas=true;cx.clearRect(0,0,SW,900);{cx.fillStyle='rgba(255,255,255,.9)';for(const f of flakes){f.y+=f.s;f.w+=.02;f.x+=Math.sin(f.w)*.6;if(f.y>905){f.y=-10;f.x=rnd(0,SW)}cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}requestAnimationFrame(snow)}snow();
 
 /* ---------- escenas ---------- */
 function go(name){$('stars').style.visibility='';drags.clear();closeTray();if(typeof TR!=='undefined'&&TR)closeTrace();if(typeof BUY!=='undefined'&&BUY)closeBuy();if(typeof Q!=='undefined'&&Q)closeQuiz();want=null;if(W.sc[W.cur])W.sc[W.cur].forEach(c=>c._wish=null);wishT=performance.now()-9000;$('creator').classList.remove('open');W.cur=name;objL.innerHTML='';els.clear();
