@@ -463,6 +463,8 @@ body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:pa
 #mTitle{position:absolute;left:50%;top:16px;width:500px;height:93px;margin-left:-250px;pointer-events:none;z-index:4;display:none}#mTitle svg{width:100%;height:100%}
 .loc.lpress{transform:scale(.96);transform-box:fill-box;transform-origin:50% 100%}
 .mill{animation:mill 6s linear infinite;transform-box:fill-box;transform-origin:center}@keyframes mill{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.qo.pic{background:#fff!important}.qo.pic svg{width:72%;height:72%}
+.engw{position:absolute;left:0;right:0;bottom:-24px;font:700 64px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.3);text-align:center}
 </style>
 </head>
 <body>
@@ -1052,7 +1054,7 @@ function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage
 }
 function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);d.el&&d.el.classList.remove('press');if(!drags.size)document.body.classList.remove('dragging');
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
- if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){t(d.o);if(K[d.o.k].cat==='animal')befriend(d.o)}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal')befriend(d.o)}return}
+ if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
  if(d.near){d.near._eat=false;draw(d.near)}
  if(d.o._lift){d.o._lift=0;d.el.classList.remove('dangle');if(els.has(d.o.id))draw(d.o)}
@@ -1384,7 +1386,7 @@ function newScene(n){switch(n){
    mk('char',330,798,{sit:t.id,seat:0,look:Object.assign(look(SKINS[4],'rizos',HAIRC[0],SHIRTS[3],PANTS[0]),{outfit:'banador'})}),
    mk('char',820,500,{swim:true,look:Object.assign(look(SKINS[1],'coletas',HAIRC[2],SHIRTS[0],PANTS[3]),{outfit:'banador'})})]}
 }return []}
-function ensureScenes(){{const c=W.sc.cocina;if(c&&!c.some(o=>o.k==='tartacumple')){const m=c.find(o=>o.k==='mesa'),e=c.find(o=>o.k==='encimera'),fr=c.find(o=>o.k==='frutero');if(fr&&e){fr.x=920;fr.y=418;fr.on=e.id}if(m)c.push(mk('tartacumple',m.x,m.y-124,{on:m.id}));c.push(mk('pompero',1160,860))}}for(const n of ['parque','playa']){const c=W.sc[n];if(c&&!c.some(o=>o.k==='pompero'))c.push(mk('pompero',n==='parque'?660:600,860))}{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(!W.sc.estudio)W.sc.estudio=artScene();if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
+function ensureScenes(){{const c=W.sc.cocina;if(c&&!c.some(o=>o.k==='tartacumple')){const m=c.find(o=>o.k==='mesa'),e=c.find(o=>o.k==='encimera'),fr=c.find(o=>o.k==='frutero');if(fr&&e){fr.x=920;fr.y=418;fr.on=e.id}if(m)c.push(mk('tartacumple',m.x,m.y-124,{on:m.id}));c.push(mk('pompero',1160,860))}}for(const n of ['parque','playa']){const c=W.sc[n];if(c&&!c.some(o=>o.k==='pompero'))c.push(mk('pompero',n==='parque'?660:600,860))}{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(!W.sc.estudio)W.sc.estudio=artScene();if(W.sc.cole&&!W.sc.cole.some(o=>o.k==='juegoEng'))W.sc.cole.push(mk('juegoEng',1460,470));if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
  const c=W.sc.cole;if(!c.some(o=>o.k==='juegoVoc')){const r=c.find(o=>o.k==='reloj');if(r){r.x=1460;r.y=275}c.push(mk('juegoVoc',1180,330),mk('juegoLet',1320,330),mk('juegoNum',1180,470),mk('juegoNom',1320,470),mk('blq_A',690,890),mk('blq_M',790,895),mk('blq_3',890,890))}}
 Object.assign(SC,{cole:{floor:605,bgc:'#e3f4dc'},pelu:{floor:625,bgc:'#f1e2ff'},playa:{floor:560,bgc:'#bfe8ff',water:{top:425}}});
 BG.cole=svg('0 0 1600 900',`<defs>
@@ -1604,11 +1606,11 @@ const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const OWL=`<svg viewBox="0 0 230 280"><ellipse cx="115" cy="270" rx="80" ry="8" fill="rgba(0,0,0,.25)"/><path d="M44 80 L58 26 L92 62Z M186 80 L172 26 L138 62Z" fill="#a0673a" ${L}/><ellipse cx="40" cy="170" rx="26" ry="60" fill="#a0673a" ${L} transform="rotate(14 40 170)"/><ellipse cx="190" cy="170" rx="26" ry="60" fill="#a0673a" ${L} transform="rotate(-14 190 170)"/><ellipse cx="115" cy="160" rx="84" ry="104" fill="#b07a4f" ${L}/><ellipse cx="115" cy="196" rx="54" ry="64" fill="#f0d2b0" ${L}/><path d="M90 180 q10 8 20 0 M120 180 q10 8 20 0 M100 206 q10 8 20 0 M130 206 q10 8 20 0" fill="none" stroke="#c9a07a" stroke-width="4"/><g class="oeyes"><circle cx="82" cy="112" r="32" fill="#fff" ${L}/><circle cx="148" cy="112" r="32" fill="#fff" ${L}/><circle cx="86" cy="116" r="15" fill="#3a2b27"/><circle cx="144" cy="116" r="15" fill="#3a2b27"/><circle cx="91" cy="110" r="5" fill="#fff"/><circle cx="149" cy="110" r="5" fill="#fff"/></g><path d="M103 142 L127 142 L115 164Z" fill="#ff9f43" ${L}/><path d="M48 50 L115 20 L182 50 L115 80Z" fill="#4a3b36"/><rect x="84" y="54" width="62" height="24" fill="#4a3b36"/><path d="M115 50 L168 62 V92" fill="none" stroke="#ffd23f" stroke-width="5"/><circle cx="168" cy="96" r="7" fill="#ffd23f"/></svg>`;
 let Q=null;
 function owlTalk(){const e=$('qOwl');e.classList.remove('talk');void e.offsetWidth;e.classList.add('talk')}
-function qSay(t){say(t,1);owlTalk()}
+function qSay(t){if(Q&&Q.mode==='eng'&&t===Q.text){engPrompt();return}say(t,1);owlTalk()}
 function startQuiz(mode,o){o=o||{};Q={mode,round:0,res:[],len:o.len||5,reward:o.reward||3,reto:!!o.reto};closeTray();$('quiz').classList.add('open');$('qOwl').innerHTML=shade(OWL);
- qSay((Q.reto?'\u00a1Reto sorpresa! ':'')+{voc:'\u00a1Vamos a jugar con las vocales!',let:'\u00a1Vamos a jugar con las letras!',num:'\u00a1Vamos a contar!'}[mode]);setTimeout(()=>{if(Q)nextQ()},1900)}
+ qSay((Q.reto?'\u00a1Reto sorpresa! ':'')+{voc:'\u00a1Vamos a jugar con las vocales!',let:'\u00a1Vamos a jugar con las letras!',num:'\u00a1Vamos a contar!',eng:'\u00a1Vamos a aprender ingl\u00e9s! Escucha y toca el dibujo.'}[mode]);setTimeout(()=>{if(Q)nextQ()},1900)}
 function renderDots(){$('qDots').innerHTML=Array.from({length:Q.len},(_,i)=>{const r=Q.res[i];return r===undefined?`<svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="16" fill="none" stroke="#fff" stroke-width="4" opacity=".6"/></svg>`:`<svg viewBox="0 0 46 46"><path d="M23 2 L28 17 L44 17 L31 27 L36 43 L23 33 L10 43 L15 27 L2 17 L18 17Z" fill="${r?'#ffd23f':'#e2e2e2'}" stroke="#4a3b36" stroke-width="3" stroke-linejoin="round"/></svg>`}).join('')}
-function nextQ(){if(!Q)return;if(Q.round>=Q.len)return endQuiz();Q.round++;Q.tries=0;Q.count=0;Q.lock=false;
+function nextQ(){if(!Q)return;if(Q.round>=Q.len)return endQuiz();Q.round++;Q.tries=0;Q.count=0;Q.lock=false;if(Q.mode==='eng'){engQ();return}
  const r=Q.round,m=Q.mode;let target,opts,pic='',text;
  if(m==='voc'||m==='let'){const pool=m==='voc'?VOW:CONS;target=pick(pool.filter(x=>x!==Q.last));Q.last=target;opts=shuffle([target,...shuffle(pool.filter(x=>x!==target)).slice(0,2)]);
   if(r%2){const w=WORDS[target];pic=`<div class="big">${shade(picFor(w))}</div>`;text=`\u00a1${w[0].toUpperCase()+w.slice(1)}! \u00bfCon qu\u00e9 letra empieza ${w}?`}
@@ -1637,9 +1639,9 @@ $('qOpts').addEventListener('pointerdown',e=>{const el=e.target.closest('.qo');i
  if(el.dataset.v===Q.target){Q.lock=true;el.classList.add('yes');SND.fanfare();qBurst(el,'star',9);
   const first=Q.tries===0;Q.res.push(first);giveCoins(first?2:1,el);renderDots();
   let praise=pick(['\u00a1Muy bien!','\u00a1Genial!','\u00a1Eso es!','\u00a1Fenomenal!']);
-  if(Q.mode!=='num'&&Q.round%2)praise+=` ${Q.target}, de ${WORDS[Q.target]}.`;else if(Q.mode==='num')praise+=` \u00a1${NUMW[+Q.target]}!`;
-  qSay(praise);setTimeout(nextQ,Q.mode!=='num'&&Q.round%2?2600:1900)}
- else{Q.tries++;el.classList.add('no');SND.boing();qSay(pick(['\u00a1Casi! Prueba otra vez','\u00a1Uy! Prueba otra']));
+  if(Q.mode==='eng'){}else if(Q.mode!=='num'&&Q.round%2)praise+=` ${Q.target}, de ${WORDS[Q.target]}.`;else if(Q.mode==='num')praise+=` \u00a1${NUMW[+Q.target]}!`;
+  if(Q.mode==='eng'){sayMix([[praise,'es'],[Q.en,'en'],['es '+Q.es+'.','es']]);owlTalk()}else qSay(praise);setTimeout(nextQ,Q.mode==='eng'?3000:Q.mode!=='num'&&Q.round%2?2600:1900)}
+ else{Q.tries++;el.classList.add('no');SND.boing();if(Q.mode==='eng'){sayMix([['\u00a1Casi! Escucha:','es'],[Q.en,'en']]);owlTalk()}else qSay(pick(['\u00a1Casi! Prueba otra vez','\u00a1Uy! Prueba otra']));
   if(Q.tries>=2){const ok=$('qOpts').querySelector(`[data-v="${Q.target}"]`);ok&&ok.classList.add('help')}}});
 
 /* ---------- calendario de sorpresas y \u00e1lbum ---------- */
@@ -1968,7 +1970,7 @@ $('art').addEventListener('pointerdown',e=>{const t=e.target;if(ALOCK&&!t.closes
 const RETO_SEC=+(new URLSearchParams(location.search).get('reto'))||240;let retoT=0,retoOn=false,retoNag=0,retoLast=null;
 const retoEl=document.createElement('div');retoEl.id='reto';retoEl.innerHTML=`<div class="rowl"></div><div class="rq">?</div>`;$('stage').appendChild(retoEl);
 function retoShow(){retoOn=true;retoNag=0;retoEl.querySelector('.rowl').innerHTML=shade(OWL);retoEl.classList.add('show');SND.whee();say('\u00a1Reto sorpresa! \u00a1T\u00f3came!',1)}
-function retoGo(){retoOn=false;retoT=0;retoEl.classList.remove('show');const m=pick(['voc','let','num'].filter(x=>x!==retoLast));retoLast=m;closeTray();startQuiz(m,{len:3,reward:5,reto:1})}
+function retoGo(){retoOn=false;retoT=0;retoEl.classList.remove('show');const m=pick(['voc','let','num','eng'].filter(x=>x!==retoLast));retoLast=m;closeTray();startQuiz(m,{len:3,reward:5,reto:1})}
 retoEl.addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.pop();retoGo()});
 setInterval(()=>{if(!W||document.hidden||OV||Q||(typeof TR!=='undefined'&&TR)||$('intro').classList.contains('open'))return;
  if(retoOn){if(++retoNag%25===0){say('\u00a1Tengo un reto para ti!',1);SND.pop()}return}
@@ -2100,6 +2102,27 @@ const mTitle=document.createElement('div');mTitle.id='mTitle';mTitle.innerHTML=`
 function visLocs(){const sr=stage.getBoundingClientRect();return [...mapL.querySelectorAll('.loc')].filter(g=>{const r=g.getBoundingClientRect();return r.right>sr.left+40&&r.left<sr.right-40})}
 const goNow1=goNow;goNow=function(n){const prev=W.cur;goNow1(n);if(n==='map'){const p=MPOS[prev];setCam(p?p[0]-SW/2:(W.mapX!=null?W.mapX:MPOS.casa[0]-SW/2))}else arrUI()};
 
+/* ---------- ingles ---------- */
+let VOEN=null;function pickVoiceEn(){try{const vs=speechSynthesis.getVoices();VOEN=vs.find(v=>/en[-_]GB/i.test(v.lang))||vs.find(v=>/en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}catch(e){}}
+pickVoiceEn();try{speechSynthesis.addEventListener('voiceschanged',pickVoiceEn)}catch(e){}
+function sayMix(parts){if(W&&W.mute)return;try{speechSynthesis.cancel();parts.forEach(([t,l])=>{const u=new SpeechSynthesisUtterance(t);if(l==='en'){u.lang=VOEN?VOEN.lang:'en-GB';if(VOEN)u.voice=VOEN;u.rate=.8;u.pitch=1.2}else{u.lang='es-ES';if(VO)u.voice=VO;u.rate=1;u.pitch=1.35}speechSynthesis.speak(u)})}catch(e){}lastSay=performance.now()}
+const blob=c=>svg('0 0 100 100',`<path d="M50 8 C78 8 94 30 90 56 C86 84 60 94 40 90 C14 86 6 60 12 38 C18 18 30 8 50 8Z" fill="${c}" stroke="#4a3b36" stroke-width="5"/><path d="M30 30 Q40 20 54 22" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".6"/>`);
+const digit=n=>svg('0 0 100 100',`<text x="50" y="80" text-anchor="middle" font-size="86" ${FONT} fill="#ffd23f" stroke="#4a3b36" stroke-width="6" stroke-linejoin="round" paint-order="stroke">${n}</text>`);
+const ENV={
+ animals:[['gato','cat','gato'],['perro','dog','perro'],['conejo','rabbit','conejo'],['vaca','cow','vaca'],['cerdito','pig','cerdito'],['gallina','hen','gallina'],['pinguino','penguin','ping\u00fcino'],['pato','duck','pato']].map(([k,en,es])=>({pic:()=>k==='pato'?PIC.pato:K[k].d,en,es})),
+ colors:[['#ff4d4d','red','rojo'],['#4f8bff','blue','azul'],['#ffd23f','yellow','amarillo'],['#5fcf5f','green','verde'],['#ff8fc8','pink','rosa'],['#ff9f43','orange','naranja'],['#a06cff','purple','morado']].map(([c,en,es])=>({pic:()=>blob(c),en,es})),
+ food:[['manzana','apple','manzana'],['platano','banana','pl\u00e1tano'],['zanahoria','carrot','zanahoria'],['helado','ice cream','helado'],['pizza','pizza','pizza'],['galleta','cookie','galleta'],['huevo','egg','huevo'],['pastel','cake','pastel']].filter(([k])=>K[k]).map(([k,en,es])=>({pic:()=>{const d=K[k].d;return typeof d==='function'?d({}):d},en,es})),
+ numbers:[[1,'one','uno'],[2,'two','dos'],[3,'three','tres'],[4,'four','cuatro'],[5,'five','cinco'],[6,'six','seis'],[7,'seven','siete'],[8,'eight','ocho'],[9,'nine','nueve'],[10,'ten','diez']].map(([n,en,es])=>({pic:()=>digit(n),en,es}))};
+const ENCAT=['animals','colors','food','numbers'];
+function engPrompt(){if(!Q)return;sayMix([['Toca...','es'],[Q.en,'en']]);owlTalk()}
+function engQ(){const cat=ENCAT[(Q.round-1)%ENCAT.length],pool=ENV[cat];let it=pick(pool.filter(x=>x.en!==Q.last));Q.last=it.en;
+ const opts=shuffle([it,...shuffle(pool.filter(x=>x!==it)).slice(0,2)]);Q.target=it.en;Q.en=it.en;Q.es=it.es;Q.text='__eng__';
+ $('qPic').classList.remove('many');$('qPic').innerHTML=`<div class="big ear">${shade(svg('0 0 60 60',`<path d="M8 22 H20 L34 10 V50 L20 38 H8Z" fill="#ffffff" ${L}/><path d="M42 20 Q50 30 42 40 M48 14 Q60 30 48 46" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`))}</div><div class="engw">${it.en}</div>`;
+ $('qOpts').innerHTML=opts.map(o=>`<div class="qo pic" data-v="${o.en}">${shade(o.pic())}</div>`).join('');renderDots();engPrompt()}
+const ENTAP={gato:'cat',perro:'dog',conejo:'rabbit',vaca:'cow',cerdito:'pig',gallina:'hen',pinguino:'penguin',nutria:'otter',hamster:'hamster',unicornio:'unicorn',cangrejo:'crab'};
+function engTap(o){const en=ENTAP[o.k];if(!en||Math.random()>.45)return;setTimeout(()=>sayMix([['En ingl\u00e9s:','es'],[en,'en']]),650)}
+def('juegoEng',{fixed:1,w:130,h:130,d:tile('Hi!','#4f8bff',50),tap:()=>startQuiz('eng')});
+HINTS.cole.splice(1,0,['tap','juegoEng','\u00a1Aprende ingl\u00e9s con el b\u00faho!']);
 load();ensureScenes();ensureMara();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
