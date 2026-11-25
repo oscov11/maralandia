@@ -269,6 +269,34 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 .cbox button{font:inherit;font-size:32px;border:0;border-radius:24px;padding:16px 30px;background:#e9e3ff;color:#4a3b36}
 .cbox .cmain{background:#2fbf71;color:#fff;width:100%}.cbox .cclose{background:#ff6b6b;color:#fff;margin-top:10px}
 .cbox input{flex:1;font:inherit;font-size:34px;padding:16px 22px;border-radius:24px;border:4px solid #ddd;text-transform:uppercase}
+#musicBtn{position:absolute;left:330px;top:30px;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:auto;box-shadow:0 5px 0 rgba(60,40,30,.2);border-radius:50%}
+#musicBtn svg{width:100%;height:100%}
+#musPick{position:absolute;left:300px;top:126px;display:none;gap:18px;padding:18px;background:rgba(255,255,255,.9);border-radius:60px;z-index:300500;box-shadow:0 8px 0 rgba(60,40,30,.2)}
+#musPick.open{display:flex}
+.mp{width:110px;height:110px;border-radius:50%;border:6px solid #fff;box-sizing:border-box;box-shadow:0 5px 0 rgba(60,40,30,.2)}.mp svg{width:100%;height:100%}.mp.on{box-shadow:0 0 0 7px #ffd23f}
+#intro{position:absolute;inset:0;z-index:500000;display:none;overflow:hidden;font-family:Fredoka,"Arial Rounded MT Bold",sans-serif}
+#intro.open{display:block}
+#intro.go{animation:igo .9s ease-in forwards}
+@keyframes igo{to{opacity:0;transform:scale(1.25)}}
+.isky{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#3b5bb8,#1f2d6b 60%,#141c48)}
+.iflakes i{position:absolute;top:-20px;border-radius:50%;background:#fff;opacity:.85;animation:ifall linear infinite}
+@keyframes ifall{to{transform:translate(40px,960px)}}
+.ihills{position:absolute;left:0;right:0;bottom:0;width:100%;height:360px}
+.ititle{position:absolute;left:0;right:0;top:70px;text-align:center;font-size:170px;font-weight:700;letter-spacing:4px;line-height:1}
+.ititle span{display:inline-block;-webkit-text-stroke:12px #4a3b36;paint-order:stroke fill;text-shadow:0 12px 0 rgba(0,0,0,.25);animation:ilet 1.1s cubic-bezier(.3,1.6,.5,1) both,ibob 2.4s ease-in-out infinite}
+.ititle span:nth-child(odd){animation-delay:inherit}
+@keyframes ilet{from{transform:translateY(-300px) scale(.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes ibob{50%{translate:0 -10px}}
+.imara{position:absolute;left:calc(50% - 470px);bottom:90px;width:200px;height:374px;animation:iwave 1.6s ease-in-out infinite;transform-origin:50% 100%}
+.imara svg{width:100%;height:100%;overflow:visible}
+@keyframes iwave{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) translateY(-12px)}}
+.igift{position:absolute;right:calc(50% - 450px);bottom:110px;width:200px;height:200px;animation:ibounce 1.2s ease-in-out infinite}
+.igift svg{width:100%;height:100%}
+@keyframes ibounce{50%{transform:translateY(-18px) rotate(4deg)}}
+.iplay{position:absolute;left:calc(50% - 125px);top:400px;width:250px;height:250px;border-radius:50%;background:#2fbf71;border:12px solid #fff;box-sizing:border-box;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 0 rgba(0,0,0,.3),0 0 0 0 rgba(255,255,255,.6);animation:ipulse 1.4s ease-in-out infinite;cursor:pointer}
+.iplay svg{width:60%;height:60%;margin-left:14px}
+@keyframes ipulse{0%,100%{transform:scale(1);box-shadow:0 14px 0 rgba(0,0,0,.3),0 0 0 0 rgba(255,255,255,.5)}50%{transform:scale(1.08);box-shadow:0 14px 0 rgba(0,0,0,.3),0 0 0 40px rgba(255,255,255,0)}}
+.isave{position:absolute;left:0;right:0;bottom:30px;text-align:center;color:#4a3b36;font-size:34px;opacity:.75}
 @media (prefers-reduced-motion:reduce){.loc,.eyes{animation:none}}
 </style>
 </head>
@@ -307,6 +335,8 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
   <div id="advent" class="ovl"><div class="xboard"><div class="xclose" id="advClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div class="garl"></div><div id="advGrid"></div></div><div id="reveal"></div></div>
   <div id="album" class="ovl"><div class="xboard alb"><div class="xclose" id="albClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="albCount"></div><div id="albGrid"></div></div></div>
   <div id="cloud"><div class="cbox"><h2>Guardado en la nube</h2><p class="cs" id="cStatus"></p><div class="crow"><span>Código de la familia</span><b id="cCode">—</b><button id="cCopy">Copiar</button></div><button id="cNew" class="cmain">Crear código nuevo</button><div class="crow"><input id="cInput" placeholder="Usar otro código: MARA-XXXXXX" autocapitalize="characters" autocomplete="off"><button id="cJoin">Usar</button></div><p class="cs small">Pon el mismo código en cada móvil o tablet y todos comparten la partida.</p><button id="cClose" class="cclose">Cerrar</button></div></div>
+  <div id="musPick"></div>
+  <div id="intro"></div>
   <div id="hand"><i class="rip"></i><svg viewBox="0 0 110 130"><path d="M30 14 Q30 4 40 4 Q50 4 50 14 V58 Q54 50 62 52 Q70 54 70 62 Q74 56 82 58 Q90 60 90 70 Q94 66 100 68 Q108 72 106 84 L100 106 Q94 124 74 124 H52 Q36 124 28 110 L12 82 Q8 72 16 68 Q24 66 30 76Z" fill="#fff" stroke="#4a3b36" stroke-width="5" stroke-linejoin="round"/><path d="M50 60 V80 M70 64 V82 M90 72 V86" stroke="#d8c8c0" stroke-width="3" stroke-linecap="round"/></svg></div>
   <div id="modal"><div class="box">
     <svg viewBox="0 0 60 60" width="120"><path d="M46 30 A16 16 0 1 1 40 17" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round"/><path d="M34 8 L44 16 L34 24" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1141,7 +1171,7 @@ setInterval(()=>{if(!W||W.cur==='map'||document.hidden||Math.random()<.4)return;
 let lastAct=performance.now(),hintOn=false;
 document.addEventListener('pointerdown',()=>{lastAct=performance.now();$('hand').classList.remove('show');hintOn=false},true);
 function showHand(x,y){const h=$('hand');h.style.left=(x-40+OFF)+'px';h.style.top=(y-4)+'px';h.classList.remove('show');void h.offsetWidth;h.classList.add('show');hintOn=true;setTimeout(()=>{hintOn=false;h.classList.remove('show')},2700)}
-setInterval(()=>{if(!W||document.hidden||hintOn||drags.size||Q||OV)return;if(performance.now()-lastAct<9000)return;let x,y;
+setInterval(()=>{if(!W||document.hidden||hintOn||drags.size||Q||OV||$('intro').classList.contains('open'))return;if(performance.now()-lastAct<9000)return;let x,y;
  if(W.cur==='map'){const g=advPending()&&Math.random()<.6?bMail:pick([...mapL.querySelectorAll('.loc')]);if(!g)return;const r=g.getBoundingClientRect(),sr=stage.getBoundingClientRect();x=(r.left+r.width/2-sr.left)/scale-OFF;y=(r.top+r.height*.6-sr.top)/scale}
  else if(W.pocket.length&&Math.random()<.5){const r=$('bPocket').getBoundingClientRect(),sr=stage.getBoundingClientRect();x=(r.left+r.width/2-sr.left)/scale-OFF;y=(r.top+r.height*.6-sr.top)/scale}
  else{const w=objs().find(c=>c._wish);const cands=w?[w]:objs().filter(o=>o.k==='char'||K[o.k].tap||K[o.k].paint);if(!cands.length)return;const o=pick(cands);const s=sz(o);x=Math.min(1500,Math.max(100,o.x+(w?60:0)));y=w?o.y-s.h-70:o.y-s.h*.55}
@@ -1149,7 +1179,7 @@ setInterval(()=>{if(!W||document.hidden||hintOn||drags.size||Q||OV)return;if(per
 // silencio para papá/mamá (en el mapa)
 const mu=document.createElement('div');mu.id='mute';rs.after(mu);
 function muteUI(){mu.innerHTML=`<svg viewBox="0 0 60 60"><path d="M8 22 H20 L34 10 V50 L20 38 H8Z" fill="#4a3b36"/>${W.mute?'<path d="M42 22 L56 38 M56 22 L42 38" stroke="#ff6b6b" stroke-width="6" stroke-linecap="round"/>':'<path d="M42 20 Q50 30 42 40 M48 14 Q60 30 48 46" fill="none" stroke="#4a3b36" stroke-width="5" stroke-linecap="round"/>'}</svg>`}
-mu.addEventListener('pointerdown',e=>{e.stopPropagation();W.mute=!W.mute;try{speechSynthesis.cancel()}catch(err){}muteUI();save();if(!W.mute)SND.pop()});
+mu.addEventListener('pointerdown',e=>{e.stopPropagation();W.mute=!W.mute;if(mus.gain)mus.gain.gain.value=W.mute?0:.55;try{speechSynthesis.cancel()}catch(err){}muteUI();save();if(!W.mute)SND.pop()});
 
 /* ---------- juegos del cole ---------- */
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -1308,7 +1338,7 @@ const API=(()=>{const h=location.hostname;if(!/^https?:$/.test(location.protocol
 const CKEY='maralandia_codigo';
 const FAMILY='MARA-TFC26W2MMT';let cloudCode=FAMILY;try{cloudCode=localStorage.getItem(CKEY)||FAMILY}catch(e){}
 let cloudState='off',pushT=null,lastPushed=0,pulling=false;
-function cloudSetState(st){cloudState=st;const b=document.getElementById('cloudBtn');if(b)b.dataset.st=st;const s=document.getElementById('cStatus');if(s)s.textContent=cloudMsg()}
+function cloudSetState(st){cloudState=st;if(typeof introSave==='function')introSave();const b=document.getElementById('cloudBtn');if(b)b.dataset.st=st;const s=document.getElementById('cStatus');if(s)s.textContent=cloudMsg()}
 function cloudMsg(){if(!API)return 'El guardado en la nube funciona al abrir el juego desde tu dominio.';if(!cloudCode)return 'Sin código: la partida solo se guarda en este aparato.';return {ok:'Guardado en la nube ✓',sync:'Guardando…',err:'Sin conexión: se guarda aquí y se subirá luego.',off:'Conectando…'}[cloudState]||''}
 function snapshot(){W.uid=uid;return JSON.parse(JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v))}
 async function cloudPush(force){if(!API||!cloudCode||pulling)return;if(!force&&(W.ts||0)<=lastPushed)return;const ts=W.ts||Date.now();W.ts=ts;cloudSetState('sync');
@@ -1331,9 +1361,63 @@ addEventListener('pagehide',cloudBeacon);document.addEventListener('visibilitych
 setInterval(()=>cloudPush(false),8000);
 cloudSetState(API&&cloudCode?'off':'none');
 
-const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
+/* ---------- música ---------- */
+const NOTEF=n=>{const m=n.match(/^([A-G])(#|b)?(\d)$/);const st={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);return 440*Math.pow(2,(st+(+m[3]-4)*12-9)/12)};
+const P=s=>s.trim().split(/\s+/).map(t=>{const [n,d]=t.split(':');return [n,+d||1]});
+const SONGS={
+ cascabeles:{bpm:150,bell:1,m:P(`E4 E4 E4:2 E4 E4 E4:2 E4 G4 C4:1.5 D4:.5 E4:4 F4 F4 F4:1.5 F4:.5 F4 E4 E4 E4:.5 E4:.5 E4 D4 D4 E4 D4:2 G4:2
+ E4 E4 E4:2 E4 E4 E4:2 E4 G4 C4:1.5 D4:.5 E4:4 F4 F4 F4:1.5 F4:.5 F4 E4 E4 E4:.5 E4:.5 G4 G4 F4 D4 C4:4`)},
+ nochedepaz:{bpm:100,m:P(`G4:1.5 A4:.5 G4 E4:3 G4:1.5 A4:.5 G4 E4:3 D5:2 D5 B4:3 C5:2 C5 G4:3 A4:2 A4 C5:1.5 B4:.5 A4 G4:1.5 A4:.5 G4 E4:3
+ A4:2 A4 C5:1.5 B4:.5 A4 G4:1.5 A4:.5 G4 E4:3 D5:2 D5 F5:1.5 D5:.5 B4 C5:3 E5:3 C5 G4 E4 G4:1.5 F4:.5 D4 C4:6`)},
+ felizdia:{bpm:150,m:P(`D4 G4 G4:.5 A4:.5 G4:.5 F#4:.5 E4 E4 E4 A4 A4:.5 B4:.5 A4:.5 G4:.5 F#4 D4 D4 B4 B4:.5 C5:.5 B4:.5 A4:.5 G4 E4 D4:.5 D4:.5 E4 A4 F#4 G4:2 R:1`)},
+ estrellita:{bpm:110,m:P(`C4 C4 G4 G4 A4 A4 G4:2 F4 F4 E4 E4 D4 D4 C4:2 G4 G4 F4 F4 E4 E4 D4:2 G4 G4 F4 F4 E4 E4 D4:2 C4 C4 G4 G4 A4 A4 G4:2 F4 F4 E4 E4 D4 D4 C4:2`)},
+ martinillo:{bpm:120,m:P(`C4 D4 E4 C4 C4 D4 E4 C4 E4 F4 G4:2 E4 F4 G4:2 G4:.5 A4:.5 G4:.5 F4:.5 E4 C4 G4:.5 A4:.5 G4:.5 F4:.5 E4 C4 C4 G3 C4:2 C4 G3 C4:2`)}
+};
+const PLAYLISTS={navidad:['cascabeles','nochedepaz','felizdia'],estrellita:['estrellita'],martinillo:['martinillo'],off:[]};
+let mus={on:false,list:[],li:0,ni:0,t:0,timer:null,gain:null};
+function musGain(){const a=ac();if(!a)return null;if(!mus.gain){mus.gain=a.createGain();mus.gain.gain.value=.55;mus.gain.connect(a.destination)}return mus.gain}
+function playNote(f,t,d,bell){const a=ac(),g0=musGain();if(!a||!g0)return;const o=a.createOscillator(),o2=a.createOscillator(),g=a.createGain();o.type='triangle';o2.type='sine';o.frequency.value=f;o2.frequency.value=f*2;
+ const g2=a.createGain();g2.gain.value=bell?.35:.18;o2.connect(g2);g2.connect(g);o.connect(g);g.connect(g0);
+ const v=.075;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.015);g.gain.exponentialRampToValueAtTime(v*.35,t+Math.min(.25,d*.5));g.gain.exponentialRampToValueAtTime(.0008,t+d*.95+.05);
+ o.start(t);o2.start(t);o.stop(t+d+.1);o2.stop(t+d+.1)}
+function jingleTick(t){const a=ac(),g0=musGain();if(!a)return;const b=a.createBuffer(1,a.sampleRate*.06,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
+ const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();f.type='highpass';f.frequency.value=6000;g.gain.value=.05;s.buffer=b;s.connect(f);f.connect(g);g.connect(g0);s.start(t)}
+function musTick(){const a=ac();if(!a||!mus.on)return;if(W&&W.mute){mus.t=a.currentTime+.1;return}
+ while(mus.t<a.currentTime+.6){const song=SONGS[mus.list[mus.li]];const beat=60/song.bpm;const [n,d]=song.m[mus.ni];
+  if(n!=='R')playNote(NOTEF(n),mus.t,d*beat,song.bell);if(song.bell&&mus.ni%2===0)jingleTick(mus.t);
+  mus.t+=d*beat;mus.ni++;if(mus.ni>=song.m.length){mus.ni=0;mus.li=(mus.li+1)%mus.list.length;mus.t+=beat*2}}}
+function musicSet(name,silent){W.song=name;save();clearInterval(mus.timer);mus.on=false;
+ const list=PLAYLISTS[name]||[];if(!list.length){if(mus.gain){try{mus.gain.disconnect()}catch(e){}mus.gain=null}musUI();return}
+ const a=ac();if(!a)return;if(mus.gain){try{mus.gain.disconnect()}catch(e){}mus.gain=null}
+ mus.list=list;mus.li=0;mus.ni=0;mus.t=a.currentTime+.15;mus.on=true;mus.timer=setInterval(musTick,150);musTick();musUI()}
+const MUSIC_OPTS=[['navidad','#e23b3b',`<path d="M30 6 L12 34 H22 L8 52 H52 L38 34 H48Z" fill="#fff"/><circle cx="30" cy="6" r="4" fill="#ffd23f"/>`],
+ ['estrellita','#7e7bff',`<path d="M30 6 L36 22 L53 22 L39 32 L44 49 L30 39 L16 49 L21 32 L7 22 L24 22Z" fill="#fff"/>`],
+ ['martinillo','#2fbf71',`<path d="M16 44 Q16 16 30 14 Q44 16 44 44Z" fill="#fff"/><rect x="10" y="42" width="40" height="7" rx="3" fill="#fff"/><circle cx="30" cy="53" r="4" fill="#fff"/>`],
+ ['off','#9aa5b1',`<path d="M24 14 V40 A7 7 0 1 1 18 33 A7 7 0 0 1 24 34 V14 L44 8 V34" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M10 10 L50 50" stroke="#ff6b6b" stroke-width="6" stroke-linecap="round"/>`]];
+const mb=document.createElement('div');mb.id='musicBtn';cb.after(mb);
+function musUI(){const o=MUSIC_OPTS.find(m=>m[0]===(W.song||'navidad'))||MUSIC_OPTS[0];mb.innerHTML=`<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="${o[1]}"/>${o[2]}</svg>`;
+ const p=document.getElementById('musPick');if(p)p.querySelectorAll('.mp').forEach(e=>e.classList.toggle('on',e.dataset.s===(W.song||'navidad')))}
+mb.addEventListener('pointerdown',e=>{e.stopPropagation();ac();const p=$('musPick');p.classList.toggle('open');SND.pop()});
+$('musPick').innerHTML=MUSIC_OPTS.map(o=>`<div class="mp" data-s="${o[0]}"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="${o[1]}"/>${o[2]}</svg></div>`).join('');
+$('musPick').addEventListener('pointerdown',e=>{e.stopPropagation();const m=e.target.closest('.mp');if(!m)return;musicSet(m.dataset.s);$('musPick').classList.remove('open')});
 
-load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();cloudPull();
+/* ---------- pantalla de entrada ---------- */
+function introOpen(){const el=$('intro');const flakes=Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;animation-duration:${6+Math.random()*7}s;animation-delay:-${Math.random()*10}s;width:${6+Math.random()*10}px;height:${6+Math.random()*10}px"></i>`).join('');
+ const title='Maralandia'.split('').map((c,i)=>`<span style="animation-delay:${.3+i*.08}s;color:${['#ff8fc8','#ffd23f','#7ec8ff','#9be37a','#c9a7ff'][i%5]}">${c}</span>`).join('');
+ el.innerHTML=`<div class="isky"></div><div class="iflakes">${flakes}</div>
+ <svg class="ihills" viewBox="0 0 1600 360" preserveAspectRatio="xMidYMax slice"><path d="M-300 180 Q200 60 600 150 Q1000 40 1400 140 Q1700 70 1900 130 V400 H-300Z" fill="#dfe9fb"/>${[150,330,1260,1450].map((x,i)=>pine(x,[210,190,180,215][i],[.9,1.2,1.1,.8][i],1)).join('')}<path d="M-300 260 Q400 200 800 250 Q1200 200 1900 250 V400 H-300Z" fill="#f6faff"/></svg>
+ <div class="ititle">${title}</div>
+ <div class="imara">${shade(charSVG({look:marasLook()}))}</div>
+ <div class="igift">${shade(K.regalogrande.d)}</div>
+ <div class="iplay" id="iPlay"><svg viewBox="0 0 60 60"><path d="M22 14 L46 30 L22 46Z" fill="#fff" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></svg></div>
+ <div class="isave" id="iSave"></div>`;el.classList.add('open');introSave()}
+function introSave(){const e=$('iSave');if(!e)return;e.textContent=cloudState==='ok'?'☁ Partida guardada':cloudState==='err'?'Jugando sin conexión':API?'Cargando partida…':''}
+$('intro').addEventListener('pointerdown',e=>{if(!e.target.closest('#iPlay'))return;e.stopPropagation();ac();tryFS();SND.fanfare();
+ const el=$('intro');el.classList.add('go');musicSet(W.song||'navidad');setTimeout(()=>say('¡Hola Mara! ¡Bienvenida a Maralandia!',1),500);setTimeout(()=>{el.classList.remove('open','go');el.innerHTML=''},900)});
+
+const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;mb.style.display=m;if(m==='none')$('musPick').classList.remove('open');bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
+
+load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
 </body>
