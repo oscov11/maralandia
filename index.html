@@ -454,6 +454,9 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 .newb .nb{animation:nbb .7s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
 @keyframes nbb{to{transform:translateY(-14px) rotate(10deg) scale(1.1)}}
 .ptag{position:absolute;left:50%;top:-82px;transform:translateX(-50%);padding:2px 16px;border-radius:20px;background:#fff;box-shadow:0 0 0 3px #58434f;font:700 26px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#58434f;white-space:nowrap;pointer-events:none}
+.obj.press .in{transform:scale(.94);transition:transform .08s}
+.obj.lifted .in{transform:scale(1.08)}
+body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:paused!important}
 </style>
 </head>
 <body>
@@ -1003,7 +1006,7 @@ function vpSize(){const v=window.visualViewport;const w=v?v.width:innerWidth,h=v
 function fit(){if(typeof SR!=='undefined')SR=null;const V=vpSize(),innerWidth=V.w,innerHeight=V.h;SW=Math.round(Math.min(2200,Math.max(1600,900*innerWidth/innerHeight)));OFF=(SW-1600)/2;scale=Math.min(innerWidth/SW,innerHeight/900);
  stage.style.width=SW+'px';stage.style.transform=`translate(${(innerWidth-SW*scale)/2}px,${Math.max(0,(innerHeight-900*scale)/2)}px) scale(${scale})`;
  for(const id of ['objs','light']){const e=$(id);e.style.left=OFF+'px';e.style.width='1600px';e.style.right='auto'}
- const c=$('snow');c.width=SW;c.style.width=SW+'px';fitSvg()}
+ const c=$('snow');c.width=Math.round(SW/2);c.height=450;c.style.width=SW+'px';c.style.height='900px';fitSvg()}
 addEventListener('resize',fit);fit();
 if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 addEventListener('orientationchange',()=>[100,350,800].forEach(t=>setTimeout(fit,t)));
@@ -1012,14 +1015,17 @@ const toStage=e=>{const r=stageRect();return{x:(e.clientX-r.left)/scale-OFF,y:(e
 const over=(e,id)=>{const r=(id==='bTrash'||id==='bPocket')?btnRects()[id]:$(id).getBoundingClientRect();return e.clientX>r.left-20&&e.clientX<r.right+20&&e.clientY>r.top-20&&e.clientY<r.bottom+20};
 const drags=new Map();let lastChar=null,fsTried=false;
 function tryFS(){if(fsTried)return;fsTried=true;try{const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d)?.catch?.(()=>{});screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}
-objL.addEventListener('pointerdown',e=>{
- ac();tryFS();const el=e.target.closest('.obj');if(!el)return;const o=byId(el.dataset.id);if(!o)return;
- for(const v of drags.values())if(v.o===o)return;
+function startDrag(e,o,el){for(const v of drags.values())if(v.o===o)return;
  e.preventDefault();const p=toStage(e);
- const d={o,el,sx:p.x,sy:p.y,offX:p.x-o.x,offY:p.y-o.y,moved:false,fixed:!!K[o.k].fixed,att:[]};drags.set(e.pointerId,d);
+ const d={o,el,sx:p.x,sy:p.y,offX:p.x-o.x,offY:p.y-o.y,moved:false,fixed:!!K[o.k].fixed,att:[],t0:performance.now()};drags.set(e.pointerId,d);
  if(K[o.k].paint){d.paint=1;boardDown(o,p,d)}
- if(o.k==='char')lastChar=o.id;
-});
+ if(o.k==='char')lastChar=o.id;el.classList.add('press');document.body.classList.add('dragging')}
+objL.addEventListener('pointerdown',e=>{
+ ac();tryFS();const el=e.target.closest('.obj');if(!el)return;const o=byId(el.dataset.id);if(!o)return;startDrag(e,o,el)});
+// toque generoso: si el dedo cae cerca de un objeto (no justo encima), lo cogemos igual
+function nearObj(p){const M=Math.min(90,Math.max(30,26/scale));let best=null,bs=1e9;
+ for(const o of objs()){const k=K[o.k];if(!k||k.paint||k.flat)continue;const s=sz(o);const dx=Math.max(o.x-s.w/2-p.x,0,p.x-o.x-s.w/2),dy=Math.max(o.y-s.h-p.y,0,p.y-o.y);const dist=Math.hypot(dx,dy);if(dist>M)continue;const sc=dist+Math.sqrt(s.w*s.h)*.15;if(sc<bs){bs=sc;best=o}}return best}
+bg.addEventListener('pointerdown',e=>{if(!W||W.cur==='map'||OV||(typeof Q!=='undefined'&&Q))return;const o=nearObj(toStage(e));if(!o)return;const el=els.get(o.id);if(!el)return;ac();startDrag(e,o,el)});
 function lift(d){const o=d.o;
  if(o.sit){const f=byId(o.sit);if(f&&K[f.k].swing)stopSwing(o,f);o.sit=null;o._sleep=o._bath=false;draw(o)}
  if(o.swim){o.swim=false;draw(o)}
@@ -1031,14 +1037,14 @@ addEventListener('pointerdown',()=>{SR=null;RB=null},true);var RB=null;function 
 addEventListener('pointermove',e=>{if(!drags.has(e.pointerId))return;pmQ.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY,pointerId:e.pointerId});if(!pmRaf)pmRaf=requestAnimationFrame(()=>{pmRaf=0;const q=[...pmQ.values()];pmQ.clear();q.forEach(pmHandle)})});
 function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage(e);
  if(d.paint){if(d.noPaint)return;const l=boardLocal(d.o,p),pt={x:l.x-30,y:l.y-30};paintLine(d.o,d.last,pt);d.last=pt;if(Math.random()<.12)SND.chalk();return}
- if(!d.moved&&!d.fixed&&Math.hypot(p.x-d.sx,p.y-d.sy)>14){d.moved=true;lift(d)}
+ if(!d.moved&&!d.fixed&&Math.hypot(p.x-d.sx,p.y-d.sy)>Math.max(14,12/scale)){d.moved=true;d.el.classList.remove('press');lift(d)}
  if(!d.moved)return;
  const nx=Math.max(40,Math.min(1560,p.x-d.offX)),ny=Math.max(140,Math.min(895,p.y-d.offY)),dx=nx-d.o.x,dy=ny-d.o.y;
  shift(d.o,dx,dy);d.att.forEach(a=>shift(a,dx,dy));
  if(K[d.o.k].cat==='food'){const near=objs().find(c=>c.k==='char'&&Math.abs(c.x-p.x)<110&&Math.abs((c.y-sz(c).h+70)-p.y)<150)||null;if(near!==d.near){if(d.near){d.near._eat=false;draw(d.near)}if(near){near._eat=true;draw(near)}d.near=near}}
  const ht=over(e,'bTrash'),hp=over(e,'bPocket');if(ht!==d.ht){d.ht=ht;$('bTrash').classList.toggle('hot',ht)}if(hp!==d.hp){d.hp=hp;$('bPocket').classList.toggle('hot',hp)}
 }
-function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);
+function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);d.el&&d.el.classList.remove('press');if(!drags.size)document.body.classList.remove('dragging');
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
  if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){t(d.o);if(K[d.o.k].cat==='animal')befriend(d.o)}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal')befriend(d.o)}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
@@ -1096,9 +1102,9 @@ $('tabs').addEventListener('pointerdown',e=>{const t=e.target.closest('.tab');if
 let trayStart=null;
 $('items').addEventListener('pointerdown',e=>{const it=e.target.closest('.it');if(!it)return;if(it.classList.contains('lock')){SND.boing();say(tab==='shop'?'\u00a1C\u00f3mpralo en la tienda!':'\u00a1B\u00fascalo en el calendario de sorpresas!',1);return}trayStart={k:it.dataset.k,x:e.clientX,y:e.clientY,id:e.pointerId}});
 $('items').addEventListener('pointermove',e=>{if(!trayStart||trayStart.id!==e.pointerId)return;const dy=trayStart.y-e.clientY,dx=Math.abs(e.clientX-trayStart.x);
- if(dy>18*scale&&dy>dx){grabNew(trayStart.k,e);trayStart=null}});
+ if(dy>Math.max(8,18*scale)&&dy>dx*.6){grabNew(trayStart.k,e);trayStart=null}});
 $('items').addEventListener('pointerup',e=>{if(trayStart&&Math.abs(e.clientX-trayStart.x)<10){/* toque: soltar en el centro */const p={x:800+rnd(-200,200),y:300};const o=spawn(trayStart.k,p.x,p.y);closeTray();SND.pop();settle(o)}trayStart=null});
-function grabNew(k,e){const p=toStage(e);const s=K[k];const o=spawn(k,p.x,p.y+s.h/2);const el=els.get(o.id);drags.set(e.pointerId,{o,el,sx:p.x,sy:p.y,offX:0,offY:-s.h/2,moved:true,fixed:false,att:[]});el.classList.add('lifted');el.style.zIndex=99999;closeTray();SND.pop()}
+function grabNew(k,e){const p=toStage(e);const s=K[k];const o=spawn(k,p.x,p.y+s.h/2);const el=els.get(o.id);drags.set(e.pointerId,{o,el,sx:p.x,sy:p.y,offX:0,offY:-s.h/2,moved:true,fixed:false,att:[]});el.classList.add('lifted');el.style.zIndex=99999;document.body.classList.add('dragging');closeTray();SND.pop()}
 
 /* ---------- vestidor ---------- */
 let cIdx=0;
@@ -1533,7 +1539,7 @@ function applyNight(){const sw=objs().find(o=>o.k==='interruptor');const Lg=$('l
 
 /* ---------- nieve ---------- */
 const cv=$('snow'),cx=cv.getContext('2d');const flakes=Array.from({length:90},()=>({x:rnd(0,2200),y:rnd(0,900),r:rnd(2,6),s:rnd(.6,1.8),w:rnd(0,6)}));let snowOn=false;
-let snowWas=true;function snow(){if(!snowOn){if(snowWas){cx.clearRect(0,0,cv.width,900);snowWas=false}requestAnimationFrame(snow);return}snowWas=true;cx.clearRect(0,0,SW,900);{cx.fillStyle='rgba(255,255,255,.9)';for(const f of flakes){f.y+=f.s;f.w+=.02;f.x+=Math.sin(f.w)*.6;if(f.y>905){f.y=-10;f.x=rnd(0,SW)}cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}requestAnimationFrame(snow)}snow();
+let snowWas=true,snowF=0;function snow(){if(!snowOn){if(snowWas){cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cv.width,cv.height);snowWas=false}requestAnimationFrame(snow);return}if((snowF++&1)||drags.size||document.hidden){requestAnimationFrame(snow);return}snowWas=true;cx.setTransform(.5,0,0,.5,0,0);cx.clearRect(0,0,SW,900);{cx.fillStyle='rgba(255,255,255,.9)';for(const f of flakes){f.y+=f.s*2;f.w+=.04;f.x+=Math.sin(f.w)*1.2;if(f.y>905){f.y=-10;f.x=rnd(0,SW)}cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}requestAnimationFrame(snow)}snow();
 
 /* ---------- escenas ---------- */
 let goT=null,goFirst=true;function go(name){if(goFirst){goFirst=false;return goNow(name)}const c=$('curtain');if(c.classList.contains('run'))return;c.classList.add('run');SND.swoosh&&0;clearTimeout(goT);goT=setTimeout(()=>goNow(name),330);setTimeout(()=>c.classList.remove('run'),780)}
@@ -2004,6 +2010,11 @@ $('bPocket').addEventListener('pointerdown',()=>{if(!W.pocket.length)say('Tu bol
 $('bTrash').addEventListener('pointerdown',e=>{e.stopPropagation();cls2($('bTrash'));say('La papelera. Arrastra aqu\u00ed lo que quieras tirar.',1)});
 $('stars').style.pointerEvents='auto';$('stars').addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.ding();cls2($('stars'));const n=W.coins||0;say('Tienes '+(n<=10?NUMW[n]:n)+(n===1?' moneda':' monedas')+'. G\u00e1nalas aprendiendo en el cole y g\u00e1stalas en la tienda.',1)});
 
+/* ---------- iOS: sin zoom ni rebotes que roben el dedo ---------- */
+['gesturestart','gesturechange','gestureend','dblclick'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+let tmScroll=false;function canScroll(el){for(let n=el;n&&n!==document.body;n=n.parentElement){if(n.nodeType!==1)continue;const s=getComputedStyle(n);if(/(auto|scroll)/.test(s.overflowX+s.overflowY)&&(n.scrollWidth>n.clientWidth+2||n.scrollHeight>n.clientHeight+2))return true}return false}
+document.addEventListener('touchstart',e=>{tmScroll=canScroll(e.target);if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',e=>{if(!tmScroll||drags.size||e.touches.length>1)e.preventDefault()},{passive:false});
 load();ensureScenes();ensureMara();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
