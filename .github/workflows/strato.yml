@@ -1,0 +1,17 @@
+name: Subir a Strato
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  subir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+      - name: Subir juego por SFTP
+        env:
+          STRATO_PASS: ${{ secrets.STRATO_PASS }}
+        run: |
+          lftp -u "su62813,$STRATO_PASS" -e "set sftp:auto-confirm yes; set net:max-retries 2; mkdir -p -f maralandia; cd maralandia; put index.html; put api.php; bye" sftp://5021072744.ssh.w2.strato.hosting:22
