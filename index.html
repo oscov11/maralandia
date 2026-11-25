@@ -259,6 +259,16 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 .tfinal{position:absolute;left:-400px;width:1140px;top:120px;display:flex;justify-content:center;gap:16px}
 .tfinal span{font:700 200px/1 Fredoka,"Arial Rounded MT Bold",sans-serif;text-shadow:6px 6px 0 #fff,-6px 6px 0 #fff,6px -6px 0 #fff,-6px -6px 0 #fff,0 14px 0 rgba(0,0,0,.25);animation:jmpL .6s both}
 @keyframes jmpL{0%{transform:translateY(60px) scale(.3);opacity:0}60%{transform:translateY(-20px) scale(1.1);opacity:1}100%{transform:none}}
+#cloudBtn{position:absolute;left:230px;top:30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;pointer-events:auto}
+#cloudBtn svg{width:54px}#cloudBtn .ck{display:none}#cloudBtn[data-st=ok] .ck{display:block}#cloudBtn[data-st=err] svg path:first-child{fill:#c0392b}
+#cloud{position:absolute;inset:0;background:rgba(30,30,40,.6);display:none;z-index:470000;pointer-events:auto;font-family:Fredoka,"Arial Rounded MT Bold",sans-serif}
+#cloud.open{display:block}
+.cbox{position:absolute;left:calc(50% - 480px);top:60px;width:960px;background:#fff;border-radius:40px;padding:40px 56px;box-sizing:border-box;color:#4a3b36;font-size:34px}
+.cbox h2{margin:0 0 10px;font-size:54px}.cs{margin:6px 0 24px;color:#6b5d57}.cs.small{font-size:26px;margin-top:18px}
+.crow{display:flex;gap:20px;align-items:center;margin:18px 0}.crow span{color:#6b5d57}.crow b{font-size:52px;letter-spacing:2px}
+.cbox button{font:inherit;font-size:32px;border:0;border-radius:24px;padding:16px 30px;background:#e9e3ff;color:#4a3b36}
+.cbox .cmain{background:#2fbf71;color:#fff;width:100%}.cbox .cclose{background:#ff6b6b;color:#fff;margin-top:10px}
+.cbox input{flex:1;font:inherit;font-size:34px;padding:16px 22px;border-radius:24px;border:4px solid #ddd;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.loc,.eyes{animation:none}}
 </style>
 </head>
@@ -296,6 +306,7 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
   </div>
   <div id="advent" class="ovl"><div class="xboard"><div class="xclose" id="advClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div class="garl"></div><div id="advGrid"></div></div><div id="reveal"></div></div>
   <div id="album" class="ovl"><div class="xboard alb"><div class="xclose" id="albClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="albCount"></div><div id="albGrid"></div></div></div>
+  <div id="cloud"><div class="cbox"><h2>Guardado en la nube</h2><p class="cs" id="cStatus"></p><div class="crow"><span>Código de la familia</span><b id="cCode">—</b><button id="cCopy">Copiar</button></div><button id="cNew" class="cmain">Crear código nuevo</button><div class="crow"><input id="cInput" placeholder="Usar otro código: MARA-XXXXXX" autocapitalize="characters" autocomplete="off"><button id="cJoin">Usar</button></div><p class="cs small">Pon el mismo código en cada móvil o tablet y todos comparten la partida.</p><button id="cClose" class="cclose">Cerrar</button></div></div>
   <div id="hand"><i class="rip"></i><svg viewBox="0 0 110 130"><path d="M30 14 Q30 4 40 4 Q50 4 50 14 V58 Q54 50 62 52 Q70 54 70 62 Q74 56 82 58 Q90 60 90 70 Q94 66 100 68 Q108 72 106 84 L100 106 Q94 124 74 124 H52 Q36 124 28 110 L12 82 Q8 72 16 68 Q24 66 30 76Z" fill="#fff" stroke="#4a3b36" stroke-width="5" stroke-linejoin="round"/><path d="M50 60 V80 M70 64 V82 M90 72 V86" stroke="#d8c8c0" stroke-width="3" stroke-linecap="round"/></svg></div>
   <div id="modal"><div class="box">
     <svg viewBox="0 0 60 60" width="120"><path d="M46 30 A16 16 0 1 1 40 17" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round"/><path d="M34 8 L44 16 L34 24" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -678,9 +689,10 @@ function maraChar(x,y,extra){return mk('char',x,y,Object.assign({name:'Mara',loo
 function ensureMara(){for(const n in W.sc)if(W.sc[n].some(o=>o.name==='Mara'))return;if(W.pocket.some(o=>o.name==='Mara'))return;W.sc.casa.push(maraChar(800,880))}
 const KEY='mundoGominola_v1';
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.sc){W=s;uid=s.uid||999;return}}catch(e){}W=fresh()}
-let saveT;function saveNow(){clearTimeout(saveT);if(!W)return;W.uid=uid;const c=JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v);try{localStorage.setItem(KEY,c)}catch(e){}}
-function save(){clearTimeout(saveT);saveT=setTimeout(saveNow,300)}
-addEventListener('pagehide',saveNow);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});setInterval(saveNow,15000);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+let saveT,dirty=false,lastContent=null;function contentKey(){const t=W.ts,cu=W.cur,u=W.uid;W.ts=0;W.cur='';W.uid=0;const c=JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v);W.ts=t;W.cur=cu;W.uid=u;return c}
+function saveNow(keepTs){clearTimeout(saveT);if(!W)return;if(dirty&&!keepTs){const c=contentKey();if(c!==lastContent){W.ts=Date.now();lastContent=c}}dirty=false;W.uid=uid;const c=JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v);try{localStorage.setItem(KEY,c)}catch(e){}}
+function save(){dirty=true;clearTimeout(saveT);saveT=setTimeout(()=>saveNow(),300)}
+addEventListener('pagehide',()=>saveNow());document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});setInterval(()=>saveNow(),15000);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 const objs=()=>W.sc[W.cur]||[];
 const byId=id=>objs().find(o=>o.id==id);
 const els=new Map();
@@ -1290,9 +1302,38 @@ $('tRep').addEventListener('pointerdown',e=>{e.stopPropagation();if(TR&&TR.ch&&!
 $('tErase').addEventListener('pointerdown',e=>{e.stopPropagation();if(!TR||TR.pick||TR.lock)return;SND.swoosh();tLetter()});
 $('tArea').addEventListener('pointerdown',e=>{const w=e.target.closest('.tw');if(!w||!TR||!TR.pick)return;SND.pop();tStart(+w.dataset.i)});
 
-const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
+/* ---------- guardado en la nube ---------- */
+const CLOUD_URL='';// se rellena cuando el juego vive en GitHub y la API en el dominio
+const API=(()=>{const h=location.hostname;if(!/^https?:$/.test(location.protocol))return null;if(h.endsWith('github.io')||h.includes('claude'))return CLOUD_URL||null;return 'api.php'})();
+const CKEY='maralandia_codigo';
+let cloudCode=null;try{cloudCode=localStorage.getItem(CKEY)}catch(e){}
+let cloudState='off',pushT=null,lastPushed=0,pulling=false;
+function cloudSetState(st){cloudState=st;const b=document.getElementById('cloudBtn');if(b)b.dataset.st=st;const s=document.getElementById('cStatus');if(s)s.textContent=cloudMsg()}
+function cloudMsg(){if(!API)return 'El guardado en la nube funciona al abrir el juego desde tu dominio.';if(!cloudCode)return 'Sin código: la partida solo se guarda en este aparato.';return {ok:'Guardado en la nube ✓',sync:'Guardando…',err:'Sin conexión: se guarda aquí y se subirá luego.',off:'Conectando…'}[cloudState]||''}
+function snapshot(){W.uid=uid;return JSON.parse(JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v))}
+async function cloudPush(force){if(!API||!cloudCode||pulling)return;if(!force&&(W.ts||0)<=lastPushed)return;const ts=W.ts||Date.now();W.ts=ts;cloudSetState('sync');
+ try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({code:cloudCode,data:snapshot()})});const j=await r.json();if(!j.ok)throw 0;if(j.stale){await cloudPull();return}lastPushed=ts;cloudSetState('ok')}catch(e){cloudSetState('err')}}
+function cloudBeacon(){if(!API||!cloudCode||(W.ts||0)<=lastPushed)return;try{const ok=navigator.sendBeacon(API,new Blob([JSON.stringify({code:cloudCode,data:snapshot()})],{type:'text/plain'}));if(ok)lastPushed=W.ts}catch(e){}}
+async function cloudPull(join){if(!API||!cloudCode)return;pulling=true;cloudSetState('sync');
+ try{const r=await fetch(API+'?code='+encodeURIComponent(cloudCode),{cache:'no-store'});const j=await r.json();if(!j.ok)throw 0;
+  const rem=j.data;if(rem&&rem.sc&&(join||(rem.ts||0)>(W.ts||0))){W=rem;uid=rem.uid||999;lastPushed=rem.ts||0;pulling=false;ensureScenes();ensureMara();lastContent=contentKey();dirty=true;saveNow(true);go('map');muteUI();shownCoins=null;starUI();pocketUI()}
+  else{pulling=false;await cloudPush(true)}cloudSetState('ok')}catch(e){pulling=false;cloudSetState('err')}}
+function newCode(){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=new Uint32Array(6);crypto.getRandomValues(r);r.forEach(x=>s+=A[x%A.length]);return 'MARA-'+s}
+function setCode(c,pull){cloudCode=c;try{localStorage.setItem(CKEY,c)}catch(e){}renderCloud();if(pull)cloudPull(true);else{W.ts=W.ts||Date.now();cloudPush(true)}}
+function renderCloud(){$('cCode').textContent=cloudCode||'—';$('cStatus').textContent=cloudMsg();$('cNew').style.display=cloudCode?'none':'';$('cJoin').style.display=API?'':'none';$('cNew').disabled=!API}
+const cb=document.createElement('div');cb.id='cloudBtn';cb.innerHTML=`<svg viewBox="0 0 60 60"><path d="M16 44 H46 Q56 44 56 34 Q56 24 46 24 Q44 12 32 12 Q20 12 18 24 Q6 24 6 34 Q6 44 16 44Z" fill="#4a3b36"/><path class="ck" d="M22 32 L28 38 L40 26" fill="none" stroke="#7ed957" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;mu.after(cb);
+let cHold;cb.addEventListener('pointerdown',e=>{e.stopPropagation();cHold=setTimeout(()=>{renderCloud();$('cloud').classList.add('open');SND.pop()},1200)});['pointerup','pointerleave','pointercancel'].forEach(t=>cb.addEventListener(t,()=>clearTimeout(cHold)));
+$('cClose').addEventListener('click',()=>$('cloud').classList.remove('open'));
+$('cNew').addEventListener('click',()=>{setCode(newCode(),false)});
+$('cJoin').addEventListener('click',()=>{const v=$('cInput').value.toUpperCase().replace(/\s+/g,'').trim();if(!/^[A-Z0-9]{3,12}-[A-Z0-9]{4,10}$/.test(v)){$('cStatus').textContent='Código no válido. Ejemplo: MARA-7K3P9X';return}$('cInput').value='';setCode(v,true)});
+$('cCopy').addEventListener('click',()=>{if(!cloudCode)return;try{navigator.clipboard.writeText(cloudCode);$('cStatus').textContent='Código copiado'}catch(e){}});
+addEventListener('pagehide',cloudBeacon);document.addEventListener('visibilitychange',()=>{if(document.hidden)cloudBeacon();else cloudPull()});
+setInterval(()=>cloudPush(false),8000);
+cloudSetState(API&&cloudCode?'off':'none');
 
-load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';muteUI();go('map');syncReset();
+const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
+
+load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();cloudPull();
 }
 </script>
 </body>
