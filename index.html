@@ -364,6 +364,11 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 #curtain svg{width:100%;height:100%}
 #curtain.run{display:block;animation:curt .75s cubic-bezier(.6,0,.4,1) forwards}
 @keyframes curt{0%{transform:translateY(-105%)}40%,55%{transform:translateY(0)}100%{transform:translateY(-105%)}}
+.conf{position:absolute;top:-30px;width:16px;height:26px;border-radius:4px;z-index:445000;pointer-events:none;animation:confall 2s ease-in forwards}
+@keyframes confall{to{transform:translate(0,980px) rotate(var(--r))}}
+.bub{position:absolute;border-radius:50%;z-index:300100;background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95) 0 10%,rgba(255,255,255,.15) 12%,rgba(180,220,255,.25) 60%,rgba(255,150,220,.45) 92%,rgba(255,255,255,.7) 100%);box-shadow:inset 0 0 0 3px rgba(150,200,255,.6);animation:bubup 5s ease-in-out forwards;pointer-events:auto}
+@keyframes bubup{0%{transform:translate(0,0) scale(.3)}10%{transform:translate(calc(var(--dx)*.1),-40px) scale(1)}100%{transform:translate(var(--dx),var(--dy)) scale(1.05);opacity:.7}}
+.fheart{position:absolute;left:50%;top:-34px;width:34px;height:34px;margin-left:-17px;background:#ff5f8f;clip-path:path('M17 31 C-4 16 4 0 17 9 C30 0 38 16 17 31Z');animation:wantp 1s ease-in-out infinite alternate;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.loc,.eyes{animation:none}}
 </style>
 </head>
@@ -788,6 +793,36 @@ def('interruptor',{fixed:1,w:70,h:100,d:o=>svg('0 0 70 100',`<rect x="6" y="6" w
 def('lavabo',{fixed:1,w:180,h:230,surface:{dy:-176,w:170},d:o=>svg('0 0 180 230',`<ellipse cx="90" cy="226" rx="60" ry="4" fill="rgba(60,40,30,.15)"/><rect x="74" y="80" width="32" height="146" rx="10" fill="#f4f7fc" ${L}/><path d="M10 54 H170 Q166 110 90 112 Q14 110 10 54Z" fill="#f4f7fc" ${L}/><rect x="6" y="46" width="168" height="16" rx="8" fill="#ffffff" ${L} stroke-width="3"/><path d="M90 46 V20 Q90 8 102 8 H118 V18" fill="none" ${L} stroke-width="8"/><path d="M90 46 V20 Q90 8 102 8 H118 V18" fill="none" stroke="#dfe6ee" stroke-width="3"/>${o._run?`<path d="M116 20 V58" stroke="#7ec8ff" stroke-width="8" stroke-linecap="round" opacity=".85"/>`:''}`),tap:o=>{SND.splash();o._run=1;redraw(o);burst(o.x+20,o.y-170,'bubble',4);setTimeout(()=>{o._run=0;redraw(o)},1400)}});
 def('vater',{fixed:1,w:150,h:230,seats:[{dx:-4,dy:-96}],d:svg('0 0 150 230',`<ellipse cx="75" cy="226" rx="60" ry="5" fill="rgba(60,40,30,.15)"/><rect x="24" y="8" width="102" height="96" rx="14" fill="#f4f7fc" ${L}/><rect x="96" y="22" width="18" height="10" rx="5" fill="#9aa5b1" ${L} stroke-width="2.5"/><path d="M34 120 H116 Q114 180 90 190 L96 222 H54 L60 190 Q36 180 34 120Z" fill="#f4f7fc" ${L}/><ellipse cx="75" cy="122" rx="50" ry="16" fill="#ffffff" ${L}/><ellipse cx="75" cy="122" rx="36" ry="9" fill="#bfe6ff"/>`),tap:o=>{for(let i=0;i<8;i++)tone(rnd(200,600),rnd(80,200),.25,'sine',.08,i*.06);cls(o,'wig');burst(o.x,o.y-110,'bubble',5);say('\u00a1Fuuush!',1)}});
 
+/* ---------- tarta de cumplea\u00f1os, mascotas amigas y pompas ---------- */
+const HB=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];
+function playMelody(m,bpm){const a=ac();if(!a||(W&&W.mute))return;let t=a.currentTime+.1;const b=60/bpm;m.forEach(([n,d])=>{playNote(NOTEF(n),t,d*b,1);t+=d*b})}
+function confetti(n){for(let i=0;i<n;i++){const e=document.createElement('div');e.className='conf';e.style.left=(OFF+rnd(100,1500))+'px';e.style.background=pick(['#ff6b8b','#ffd23f','#7ec8ff','#9be37a','#c77dff','#ffb347']);e.style.animationDuration=rnd(1.6,2.6)+'s';e.style.animationDelay=rnd(0,.4)+'s';e.style.setProperty('--r',rnd(-720,720)+'deg');stage.appendChild(e);setTimeout(()=>e.remove(),3200)}}
+const cakeSVG=on=>svg('0 0 200 200',`<ellipse cx="100" cy="188" rx="92" ry="10" fill="#e3d5c8" ${L}/><rect x="18" y="104" width="164" height="80" rx="16" fill="#ffd3e6" ${L}/><path d="M18 124 Q36 142 54 124 Q72 142 90 124 Q108 142 126 124 Q144 142 162 124 Q172 136 182 124 V114 H18Z" fill="#ffffff"/><rect x="40" y="62" width="120" height="46" rx="12" fill="#ff9ec7" ${L}/><path d="M40 76 Q56 90 72 76 Q88 90 104 76 Q120 90 136 76 Q148 88 160 76 V70 H40Z" fill="#ffffff"/>`+
+ [62,84,106,128,150].map((x,i)=>`<rect x="${x-5}" y="24" width="10" height="40" rx="4" fill="${['#4fc3f7','#ffd23f','#7ed957','#c77dff','#ff6b6b'][i]}" ${L} stroke-width="3"/><path d="M${x-5} 34 l10 6 M${x-5} 46 l10 6" stroke="#fff" stroke-width="2.5"/>`+(on?`<circle cx="${x}" cy="10" r="14" fill="#fff6b0" opacity=".55"/><path class="flame" d="M${x} -6 Q${x+9} 8 ${x} 20 Q${x-9} 8 ${x} -6Z" fill="#ffb347" stroke="#e07b1f" stroke-width="2"/><path d="M${x} 6 Q${x+4} 12 ${x} 18 Q${x-4} 12 ${x} 6Z" fill="#fff6b0"/>`:`<path d="M${x} 20 q-6 -10 2 -18 q8 -8 0 -18" fill="none" stroke="#c8c8c8" stroke-width="3" stroke-linecap="round" opacity=".7"/>`)).join('')+
+ [44,78,112,146].map((x,i)=>`<circle cx="${x+10}" cy="${152+(i%2)*10}" r="6" fill="${['#ff4d6d','#4fc3f7','#ffd23f','#7ed957'][i]}"/>`).join(''));
+let micStream=null,micAsked=false,listening=false;
+async function listenBlow(o,ms){if(listening)return false;listening=true;try{if(!micStream){if(micAsked||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;micAsked=true;micStream=await navigator.mediaDevices.getUserMedia({audio:true})}
+ const a=ac(),src=a.createMediaStreamSource(micStream),an=a.createAnalyser();an.fftSize=512;src.connect(an);const buf=new Uint8Array(an.fftSize);const t0=performance.now();
+ return await new Promise(res=>{(function chk(){an.getByteTimeDomainData(buf);let s=0;for(const v of buf){const x=(v-128)/128;s+=x*x}const rms=Math.sqrt(s/buf.length);
+  if(rms>.18){src.disconnect();res(true);return}if(performance.now()-t0>ms||!(o.st&&o.st.lit)){src.disconnect();res(false);return}requestAnimationFrame(chk)})()})}
+ catch(e){return null}finally{listening=false}}
+function blowOut(o){if(!(o.st&&o.st.lit))return;o.st.lit=0;redraw(o);for(let i=0;i<6;i++)tone(rnd(300,700),rnd(100,200),.25,'sine',.05,i*.03);burst(o.x,o.y-200,'star',8);confetti(40);SND.fanfare();
+ setTimeout(()=>{say('\u00a1Feliz cumplea\u00f1os!',1)},400);setTimeout(()=>playMelody(HB,110),1300);setTimeout(()=>{o.st.lit=1;redraw(o);save()},16000);save()}
+def('tartacumple',{fixed:1,w:200,h:200,d:o=>cakeSVG(!(o.st&&o.st.lit===0)),
+ tap:async o=>{o.st=o.st||{lit:1};if(o.st.lit===undefined)o.st.lit=1;if(!o.st.lit){o.st.lit=1;redraw(o);SND.pop();say('\u00a1Velas encendidas!',1);save();return}
+  if(o._wait){blowOut(o);o._wait=0;return}
+  say('\u00a1Sopla fuerte!',1);cls(o,'wig');o._wait=1;const r=await listenBlow(o,6000);if(o._wait){o._wait=0;if(r===true||r===null)blowOut(o)}}});
+// mascotas amigas: tocar un animal junto a un personaje lo hace su amigo
+function befriend(a){const c=objs().filter(x=>x.k==='char').sort((p,q)=>Math.abs(p.x-a.x)-Math.abs(q.x-a.x))[0];if(!c||Math.abs(c.x-a.x)>320)return;if(a.friend===c.id)return;a.friend=c.id;burst(a.x,a.y-sz(a).h,'heart',4);say('\u00a1Ahora somos amigos!',1);save()}
+function followFriends(c){objs().filter(a=>a.friend===c.id&&!a.sit&&!a.swim&&!a.on&&!a.ill).forEach((a,i)=>{const tx=Math.max(80,Math.min(1520,c.x+(i%2?-1:1)*(110+i*40))),ty=Math.max(SC[W.cur].floor+30,Math.min(885,c.y+(c.sit?60:0)));setTimeout(()=>{if(!els.has(a.id))return;cls(a,'jmp');tweenTo(a,tx,ty,650)},200+i*150)})}
+// pompas de jab\u00f3n
+def('pompero',{w:70,h:120,d:svg('0 0 70 120',`<rect x="14" y="34" width="42" height="80" rx="12" fill="#7ec8ff" fill-opacity=".8" ${L}/><path d="M18 70 H52 V104 Q52 110 46 110 H24 Q18 110 18 104Z" fill="#c9a7ff" opacity=".7"/><rect x="20" y="20" width="30" height="16" rx="5" fill="#ff8fc8" ${L} stroke-width="3"/><path d="M35 20 V4" ${L} stroke-width="4"/><circle cx="35" cy="4" r="9" fill="none" ${L} stroke-width="4"/><circle cx="56" cy="-6" r="10" fill="#e8f7ff" fill-opacity=".6" stroke="#7ec8ff" stroke-width="2"/>`),
+ tap:o=>{SND.swoosh();cls(o,'wig');for(let i=0;i<7;i++)setTimeout(()=>bubble(o.x+rnd(-30,30),o.y-120),i*120);if(!W.bubTip){W.bubTip=1;say('\u00a1Explota las pompas!',1)}}});
+function bubble(x,y){const b=document.createElement('div');b.className='bub';const r=rnd(50,110);b.style.width=b.style.height=r+'px';b.style.left=(x+OFF-r/2)+'px';b.style.top=(y-r/2)+'px';
+ b.style.setProperty('--dx',rnd(-260,260)+'px');b.style.setProperty('--dy',rnd(-520,-320)+'px');b.style.animationDuration=rnd(4,6.5)+'s';stage.appendChild(b);
+ b.addEventListener('pointerdown',e=>{e.stopPropagation();const rr=b.getBoundingClientRect(),sr=stage.getBoundingClientRect();burst((rr.left+rr.width/2-sr.left)/scale-OFF,(rr.top+rr.height/2-sr.top)/scale,'star',3);tone(rnd(900,1400),rnd(300,500),.1,'sine',.16);b.remove()});
+ setTimeout(()=>b.remove(),7000)}
+
 def('char',{w:140,h:262});
 
 /* ---------- mundo ---------- */
@@ -907,11 +942,11 @@ function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage
 }
 function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
- if(!d.moved){const t=K[d.o.k].tap;if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t)t(d.o);else{SND.pop();cls(d.o,'wig')}return}
+ if(!d.moved){const t=K[d.o.k].tap;if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){t(d.o);if(K[d.o.k].cat==='animal')befriend(d.o)}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal')befriend(d.o)}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
  if(d.near){d.near._eat=false;draw(d.near)}
  if(d.o._lift){d.o._lift=0;d.el.classList.remove('dangle');if(els.has(d.o.id))draw(d.o)}
- drop(d,e)}
+ drop(d,e);if(d.o.k==='char')setTimeout(()=>followFriends(d.o),450)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',endDrag);
 
 function drop(d,e){const o=d.o,p=toStage(e),cat=o.k==='char'?'char':K[o.k].cat;
@@ -952,7 +987,7 @@ function cls2(el){el.animate([{transform:'rotate(-10deg)'},{transform:'rotate(10
 
 /* ---------- caja de juguetes ---------- */
 const TABS=[['shop','unicornio'],['xmas','estrellaoro'],['food','manzana'],['hat','corona'],['toy','pelota'],['abc','blq_A'],['tool','tijeras'],['furn','sofa'],['animal','gato']];
-const TABITEMS={food:['manzana','platano','pastel','galleta','zanahoria','huevo','helado','chocolate','pizza','coco'],hat:HATS.slice(1),toy:['pelota','osito','regalo','tambor','patito','frutero','pelotaplaya','cubo','pala','concha','libro','lapices','campana','globo','mochila','trineo'],abc:BLQ.map(c=>'blq_'+c),tool:['termometro','tirita','jarabe','esponja','manta','cepillo','tijeras','secador','peine','tinte0','tinte1','tinte2','tinte3','tinte4','tinte5'],furn:['sofa','butaca','silla','taburete','mesa','mesita','cama','banera','tele','estanteria','alfombra','pupitre','toalla','lampara','arbol','planta','banco','tractor'],animal:['gato','perro','conejo','gallina','cerdito','vaca','cangrejo','estrella']};
+const TABITEMS={food:['manzana','platano','pastel','galleta','zanahoria','huevo','helado','chocolate','pizza','coco'],hat:HATS.slice(1),toy:['pompero','pelota','osito','regalo','tambor','patito','frutero','pelotaplaya','cubo','pala','concha','libro','lapices','campana','globo','mochila','trineo'],abc:BLQ.map(c=>'blq_'+c),tool:['termometro','tirita','jarabe','esponja','manta','cepillo','tijeras','secador','peine','tinte0','tinte1','tinte2','tinte3','tinte4','tinte5'],furn:['sofa','butaca','silla','taburete','mesa','mesita','cama','banera','tele','estanteria','alfombra','pupitre','toalla','lampara','arbol','planta','banco','tractor'],animal:['gato','perro','conejo','gallina','cerdito','vaca','cangrejo','estrella']};
 let tab='food';
 const thumb=k=>{const d=K[k].d;return shade(typeof d==='function'?d({st:{on:1}}):d)};
 function renderTray(){$('tabs').innerHTML=TABS.map(t=>`<div class="tab ${t[0]===tab?'on':''}" data-t="${t[0]}">${thumb(t[1])}</div>`).join('');const list=tab==='shop'?SHOPI.filter(i=>i.t!=='cos').map(i=>i.k):tab==='xmas'?['bola',...GIFTS.filter(g=>g.t==='item'||g.t==='pet').map(g=>g.k)]:TABITEMS[tab];$('items').innerHTML=list.map(k=>`<div class="it ${k===want?'want':''} ${(tab==='xmas'&&k!=='bola'&&!(W.col||[]).includes(k))||(tab==='shop'&&!(W.shop||[]).includes(k))?'lock':''}" data-k="${k}">${thumb(k)}</div>`).join('');const w=$('items').querySelector('.want');if(w)w.scrollIntoView({inline:'center',block:'nearest'})}
@@ -1239,7 +1274,7 @@ function newScene(n){switch(n){
    mk('char',330,798,{sit:t.id,seat:0,look:Object.assign(look(SKINS[4],'rizos',HAIRC[0],SHIRTS[3],PANTS[0]),{outfit:'banador'})}),
    mk('char',820,500,{swim:true,look:Object.assign(look(SKINS[1],'coletas',HAIRC[2],SHIRTS[0],PANTS[3]),{outfit:'banador'})})]}
 }return []}
-function ensureScenes(){{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
+function ensureScenes(){{const c=W.sc.cocina;if(c&&!c.some(o=>o.k==='tartacumple')){const m=c.find(o=>o.k==='mesa'),e=c.find(o=>o.k==='encimera'),fr=c.find(o=>o.k==='frutero');if(fr&&e){fr.x=920;fr.y=418;fr.on=e.id}if(m)c.push(mk('tartacumple',m.x,m.y-124,{on:m.id}));c.push(mk('pompero',1160,860))}}for(const n of ['parque','playa']){const c=W.sc[n];if(c&&!c.some(o=>o.k==='pompero'))c.push(mk('pompero',n==='parque'?660:600,860))}{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
  const c=W.sc.cole;if(!c.some(o=>o.k==='juegoVoc')){const r=c.find(o=>o.k==='reloj');if(r){r.x=1460;r.y=275}c.push(mk('juegoVoc',1180,330),mk('juegoLet',1320,330),mk('juegoNum',1180,470),mk('juegoNom',1320,470),mk('blq_A',690,890),mk('blq_M',790,895),mk('blq_3',890,890))}}
 Object.assign(SC,{cole:{floor:605,bgc:'#e3f4dc'},pelu:{floor:625,bgc:'#f1e2ff'},playa:{floor:560,bgc:'#bfe8ff',water:{top:425}}});
 BG.cole=svg('0 0 1600 900',`<defs>
@@ -1319,7 +1354,7 @@ def('jarabe',{cat:'vettool',w:70,h:110,d:svg('0 0 70 110',`<rect x="24" y="4" wi
 def('esponja',{cat:'vettool',w:100,h:70,d:svg('0 0 100 70',`<rect x="8" y="14" width="84" height="48" rx="16" fill="#ffe066" ${L}/>${[[24,30],[48,26],[70,34],[34,48],[62,50]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#e0b22a"/>`).join('')}<circle cx="80" cy="10" r="8" fill="#e8f7ff" stroke="#7ec8ff" stroke-width="2"/><circle cx="92" cy="20" r="5" fill="#e8f7ff" stroke="#7ec8ff" stroke-width="2"/>`)});
 def('manta',{cat:'vettool',w:110,h:80,d:svg('0 0 110 80',`<path d="M8 20 Q55 4 102 20 L96 72 Q55 60 14 72Z" fill="#c9a7ff" ${L}/><path d="M26 18 L22 68 M55 12 V64 M84 18 L88 68" stroke="#fff" stroke-width="5" opacity=".7"/>`)});
 def('termometro',{cat:'vettool',w:50,h:110,d:svg('0 0 50 110',`<rect x="17" y="6" width="16" height="78" rx="8" fill="#fff" ${L}/><rect x="22" y="40" width="6" height="46" fill="#ff4d4d"/><circle cx="25" cy="92" r="13" fill="#ff4d4d" ${L}/>`)});
-function illSVG(o){if(!o.ill&&!o.band&&!o.blanket)return '';const s=sz(o);let h='';
+function illSVG(o){if(!o.ill&&!o.band&&!o.blanket&&!o.friend)return '';const s=sz(o);let h='';if(o.friend)h+=`<div class="fheart"></div>`;
  if(o.ill)h+=`<div class="illb"><svg viewBox="0 0 60 60">${ILL[o.ill].ic}</svg></div>`;
  if(o.ill==='sucio')h+=`<div class="mud"></div>`;
  if(o.band)h+=`<svg class="band" viewBox="0 0 100 50">${K.tirita.d.replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg>`;
@@ -1382,7 +1417,7 @@ Object.assign(LIGHT,{cocina:`<div class="beam" style="clip-path:polygon(110px 11
  bano:`<div class="glow sun" style="left:330px;top:0px;width:300px;height:300px;opacity:.7"></div>${Array.from({length:6},()=>`<i class="spark" style="left:${200+Math.random()*1200}px;top:${300+Math.random()*250}px;animation-delay:-${Math.random()*3}s"></i>`).join('')}<div class="vig cool"></div>`});
 function houseScene(n){switch(n){
  case 'cocina':{const e=mk('encimera',860,650),m=mk('mesa',370,830);return [e,mk('horno',1250,655),mk('nevera',1470,650),m,mk('silla',250,790),mk('silla',490,790),mk('taburete',1060,840),
-  mk('huevo',700,418,{on:e.id}),mk('zanahoria',780,418,{on:e.id}),mk('manzana',1000,418,{on:e.id}),mk('frutero',370,706,{on:m.id}),mk('gato',1380,880),
+  mk('huevo',700,418,{on:e.id}),mk('zanahoria',780,418,{on:e.id}),mk('manzana',1000,418,{on:e.id}),mk('tartacumple',370,696,{on:m.id}),mk('frutero',920,418,{on:e.id}),mk('pompero',1160,860),mk('gato',1380,880),
   mk('char',760,885,{look:look(SKINS[2],'corto',HAIRC[0],SHIRTS[6],PANTS[1])})]}
  case 'dormitorio':{const ms=mk('mesita',650,760);return [mk('interruptor',560,420),mk('armario',1390,650),mk('juguetero',1110,770),mk('cama',380,800),ms,mk('alfombra',830,860),mk('osito',900,850),mk('lampara',150,780),mk('libro',650,648,{on:ms.id})]}
  case 'bano':{const lv=mk('lavabo',800,650);return [lv,mk('vater',1130,660),mk('banera',380,790),mk('patito',300,860),mk('cepillo',770,474,{on:lv.id}),mk('planta',1500,700),mk('toalla',1000,860)]}
