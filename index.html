@@ -1303,10 +1303,10 @@ $('tErase').addEventListener('pointerdown',e=>{e.stopPropagation();if(!TR||TR.pi
 $('tArea').addEventListener('pointerdown',e=>{const w=e.target.closest('.tw');if(!w||!TR||!TR.pick)return;SND.pop();tStart(+w.dataset.i)});
 
 /* ---------- guardado en la nube ---------- */
-const CLOUD_URL='';// se rellena cuando el juego vive en GitHub y la API en el dominio
+const CLOUD_URL='https://www.fantasiamedieval.es/maralandia/api.php';// se rellena cuando el juego vive en GitHub y la API en el dominio
 const API=(()=>{const h=location.hostname;if(!/^https?:$/.test(location.protocol))return null;if(h.endsWith('github.io')||h.includes('claude'))return CLOUD_URL||null;return 'api.php'})();
 const CKEY='maralandia_codigo';
-let cloudCode=null;try{cloudCode=localStorage.getItem(CKEY)}catch(e){}
+const FAMILY='MARA-TFC26W2MMT';let cloudCode=FAMILY;try{cloudCode=localStorage.getItem(CKEY)||FAMILY}catch(e){}
 let cloudState='off',pushT=null,lastPushed=0,pulling=false;
 function cloudSetState(st){cloudState=st;const b=document.getElementById('cloudBtn');if(b)b.dataset.st=st;const s=document.getElementById('cStatus');if(s)s.textContent=cloudMsg()}
 function cloudMsg(){if(!API)return 'El guardado en la nube funciona al abrir el juego desde tu dominio.';if(!cloudCode)return 'Sin código: la partida solo se guarda en este aparato.';return {ok:'Guardado en la nube ✓',sync:'Guardando…',err:'Sin conexión: se guarda aquí y se subirá luego.',off:'Conectando…'}[cloudState]||''}
