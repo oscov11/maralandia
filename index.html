@@ -465,6 +465,17 @@ body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:pa
 .mill{animation:mill 6s linear infinite;transform-box:fill-box;transform-origin:center}@keyframes mill{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 .qo.pic{background:#fff!important}.qo.pic svg{width:72%;height:72%}
 .engw{position:absolute;left:0;right:0;bottom:-24px;font:700 64px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.3);text-align:center}
+.xboard.sboard{background:linear-gradient(#f4fffa,#d9f5ec);border-color:#7ed9c0}
+#payIn{position:absolute;inset:0}
+.pitems{position:absolute;left:140px;right:40px;top:40px;height:200px;display:flex;justify-content:center;gap:20px}
+.pit{position:relative;width:150px;height:150px;border-radius:30px;background:#fff;box-shadow:0 0 0 5px #58434f,0 8px 0 5px rgba(60,40,30,.2);display:flex;align-items:center;justify-content:center}
+.pit svg{width:76%;height:76%}.pit span{position:absolute;right:-14px;top:-14px;width:54px;height:54px;border-radius:50%;background:#ffd23f;box-shadow:0 0 0 4px #58434f;display:flex;align-items:center;justify-content:center;font:700 32px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#58434f}
+.pslots{position:absolute;left:60px;right:60px;top:280px;display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
+.pslots i{width:96px;height:96px;border-radius:50%;background:rgba(88,67,79,.12);box-shadow:inset 0 0 0 5px rgba(88,67,79,.35);display:block}
+.pslots i svg{width:100%;height:100%;opacity:0;transition:opacity .2s}.pslots i.on svg{opacity:1}
+.pbag{position:absolute;left:calc(50% - 120px);bottom:40px;width:240px;height:240px;animation:wantp .8s ease-in-out infinite alternate}
+.pbag svg{width:100%;height:100%}.pbag b{position:absolute;right:-10px;top:10px;min-width:70px;height:70px;border-radius:35px;background:#fff;box-shadow:0 0 0 5px #58434f;display:flex;align-items:center;justify-content:center;font:700 44px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#58434f}
+.pbag.empty{animation:none;opacity:.6}
 </style>
 </head>
 <body>
@@ -502,6 +513,7 @@ body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:pa
   <div id="advent" class="ovl"><div class="xboard"><div class="xclose" id="advClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div class="garl"></div><div id="advGrid"></div></div><div id="reveal"></div></div>
   <div id="pet" class="ovl"><div class="xboard pboard"><div class="xclose" id="petClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="petIn"></div></div></div>
   <div id="art" class="ovl"><div class="xboard aboard"><div class="xclose" id="artClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="artIn"></div></div></div>
+  <div id="pay" class="ovl"><div class="xboard sboard"><div class="xclose" id="payClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="payIn"></div></div></div>
   <div id="album" class="ovl"><div class="xboard alb"><div class="xclose" id="albClose"><svg viewBox="0 0 40 40" width="54"><path d="M10 10 L30 30 M30 10 L10 30" stroke="#fff" stroke-width="7" stroke-linecap="round"/></svg></div><div id="albCount"></div><div id="albGrid"></div></div></div>
   <div id="cloud"><div class="cbox"><h2>Guardado en la nube</h2><p class="cs" id="cStatus"></p><div class="crow"><span>C&#243;digo de la familia</span><b id="cCode">&#8212;</b><button id="cCopy">Copiar</button></div><button id="cNew" class="cmain">Crear c&#243;digo nuevo</button><div class="crow"><input id="cInput" placeholder="Usar otro c&#243;digo: MARA-XXXXXX" autocapitalize="characters" autocomplete="off"><button id="cJoin">Usar</button></div><p class="cs small">Pon el mismo c&#243;digo en cada m&#243;vil o tablet y todos comparten la partida.</p><button id="cClose" class="cclose">Cerrar</button></div></div>
   <div id="musPick"></div>
@@ -1054,7 +1066,7 @@ function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage
 }
 function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);d.el&&d.el.classList.remove('press');if(!drags.size)document.body.classList.remove('dragging');
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
- if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
+ if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){TAPP={x:d.sx,y:d.sy};t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
  if(d.near){d.near._eat=false;draw(d.near)}
  if(d.o._lift){d.o._lift=0;d.el.classList.remove('dangle');if(els.has(d.o.id))draw(d.o)}
@@ -1386,7 +1398,7 @@ function newScene(n){switch(n){
    mk('char',330,798,{sit:t.id,seat:0,look:Object.assign(look(SKINS[4],'rizos',HAIRC[0],SHIRTS[3],PANTS[0]),{outfit:'banador'})}),
    mk('char',820,500,{swim:true,look:Object.assign(look(SKINS[1],'coletas',HAIRC[2],SHIRTS[0],PANTS[3]),{outfit:'banador'})})]}
 }return []}
-function ensureScenes(){{const c=W.sc.cocina;if(c&&!c.some(o=>o.k==='tartacumple')){const m=c.find(o=>o.k==='mesa'),e=c.find(o=>o.k==='encimera'),fr=c.find(o=>o.k==='frutero');if(fr&&e){fr.x=920;fr.y=418;fr.on=e.id}if(m)c.push(mk('tartacumple',m.x,m.y-124,{on:m.id}));c.push(mk('pompero',1160,860))}}for(const n of ['parque','playa']){const c=W.sc[n];if(c&&!c.some(o=>o.k==='pompero'))c.push(mk('pompero',n==='parque'?660:600,860))}{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(!W.sc.estudio)W.sc.estudio=artScene();if(W.sc.cole&&!W.sc.cole.some(o=>o.k==='juegoEng'))W.sc.cole.push(mk('juegoEng',1460,470));if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
+function ensureScenes(){{const c=W.sc.cocina;if(c&&!c.some(o=>o.k==='tartacumple')){const m=c.find(o=>o.k==='mesa'),e=c.find(o=>o.k==='encimera'),fr=c.find(o=>o.k==='frutero');if(fr&&e){fr.x=920;fr.y=418;fr.on=e.id}if(m)c.push(mk('tartacumple',m.x,m.y-124,{on:m.id}));c.push(mk('pompero',1160,860))}}for(const n of ['parque','playa']){const c=W.sc[n];if(c&&!c.some(o=>o.k==='pompero'))c.push(mk('pompero',n==='parque'?660:600,860))}{const c=W.sc.cole;if(c&&!c.some(o=>o.k==='juegoNom')){const P={juegoVoc:[1180,330],juegoLet:[1320,330],juegoNum:[1180,470]};c.forEach(o=>{if(P[o.k]){o.x=P[o.k][0];o.y=P[o.k][1]}});c.push(mk('juegoNom',1320,470))}}for(const n of ['cocina','dormitorio','bano'])if(!W.sc[n])W.sc[n]=houseScene(n);if(!W.sc.tienda)W.sc.tienda=shopScene();if(!W.sc.vet)W.sc.vet=vetScene();if(!W.sc.estudio)W.sc.estudio=artScene();if(!W.sc.super)W.sc.super=superScene();if(W.sc.cole&&!W.sc.cole.some(o=>o.k==='juegoEng'))W.sc.cole.push(mk('juegoEng',1460,470));if(W.stars&&!W.coinMig){W.coins=(W.coins||0)+W.stars;W.coinMig=1}const ca=W.sc.casa;if(ca&&!ca.some(o=>o.k==='calcetines'))ca.push(mk('calcetines',300,650),mk('cajaadornos',1420,750));for(const n of ['cole','pelu','playa'])if(!W.sc[n])W.sc[n]=newScene(n);
  const c=W.sc.cole;if(!c.some(o=>o.k==='juegoVoc')){const r=c.find(o=>o.k==='reloj');if(r){r.x=1460;r.y=275}c.push(mk('juegoVoc',1180,330),mk('juegoLet',1320,330),mk('juegoNum',1180,470),mk('juegoNom',1320,470),mk('blq_A',690,890),mk('blq_M',790,895),mk('blq_3',890,890))}}
 Object.assign(SC,{cole:{floor:605,bgc:'#e3f4dc'},pelu:{floor:625,bgc:'#f1e2ff'},playa:{floor:560,bgc:'#bfe8ff',water:{top:425}}});
 BG.cole=svg('0 0 1600 900',`<defs>
@@ -2025,11 +2037,11 @@ document.addEventListener('touchstart',e=>{tmScroll=canScroll(e.target);if(e.tou
 document.addEventListener('touchmove',e=>{if(!tmScroll||drags.size||e.touches.length>1)e.preventDefault()},{passive:false});
 /* ---------- mapa grande que se desliza con el dedo ---------- */
 const WW=3800;
-const MPOS={casa:[430,660,1.15],cole:[840,830,1.05],tienda:[1180,620,1.15],pelu:[1460,830,1.05],vet:[2000,640,1.25],estudio:[2290,840,1.3],parque:[2680,640,.95],granja:[3080,800,.95],playa:[3480,840,.9]};
-const MORDER=['casa','cole','tienda','pelu','vet','estudio','parque','granja','playa'];
+const MPOS={casa:[430,660,1.15],cole:[820,835,1.05],super:[1150,625,1.1],pelu:[1370,845,1.0],tienda:[1530,615,1.05],vet:[2000,640,1.25],estudio:[2290,840,1.3],parque:[2680,640,.95],granja:[3080,800,.95],playa:[3480,840,.9]};
+const MORDER=['casa','cole','super','pelu','tienda','vet','estudio','parque','granja','playa'];
 let LOCP=null,camX=0,camV=0,camRaf=0;
 function locParts(){if(LOCP)return LOCP;const tmp=document.createElement('div');tmp.style.cssText='position:absolute;left:0;top:0;width:1600px;height:900px;visibility:hidden;pointer-events:none';
- tmp.innerHTML=MAP.replace('<text x="800" y="160"',MAPNEW+MAPSHOP+MAPVET+MAPART+'<text x="800" y="160"');document.body.appendChild(tmp);const sv=tmp.firstElementChild;sv.setAttribute('width','1600');sv.setAttribute('height','900');sv.setAttribute('viewBox','0 0 1600 900');
+ tmp.innerHTML=MAP.replace('<text x="800" y="160"',MAPNEW+MAPSHOP+MAPVET+MAPART+MAPSUPER+'<text x="800" y="160"');document.body.appendChild(tmp);const sv=tmp.firstElementChild;sv.setAttribute('width','1600');sv.setAttribute('height','900');sv.setAttribute('viewBox','0 0 1600 900');
  const sr=sv.getBoundingClientRect();const out={defs:[...sv.querySelectorAll('defs')].map(d=>d.innerHTML).join(''),locs:{}};
  sv.querySelectorAll('.loc').forEach(g=>{const r=g.getBoundingClientRect();out.locs[g.dataset.go]={html:g.outerHTML,cx:r.left-sr.left+r.width/2,by:r.bottom-sr.top-10,w:r.width,h:r.height}});
  tmp.remove();return LOCP=out}
@@ -2062,7 +2074,7 @@ function bigMap(){const P=locParts();const S=`stroke="#4a3b36" stroke-width="5" 
  const riv='M1770 470 Q1700 560 1750 650 Q1800 760 1720 900';
  s+=`<path d="${riv}" fill="none" stroke="#4a3b36" stroke-width="80" stroke-linecap="round"/><path d="${riv}" fill="none" stroke="#5aa6e0" stroke-width="70" stroke-linecap="round"/><path d="${riv}" fill="none" stroke="#8fd0ff" stroke-width="52" stroke-linecap="round"/><path d="${riv}" fill="none" stroke="#e0f4ff" stroke-width="7" stroke-linecap="round" stroke-dasharray="26 46"/>`;
  // camino que une todos los sitios
- const pts=[[-100,700]];MORDER.forEach((n,i)=>{const p=MPOS[n];pts.push([p[0],p[1]+22]);if(n==='pelu')pts.push([1740,745])});pts.push([WW+100,800]);
+ const pts=[[-100,700]];MORDER.forEach((n,i)=>{const p=MPOS[n];pts.push([p[0],p[1]+22]);if(n==='tienda')pts.push([1740,745])});pts.push([WW+100,800]);
  const rd=catmull(pts);s+=`<path d="${rd}" fill="none" stroke="#4a3b36" stroke-width="58" stroke-linecap="round"/><path d="${rd}" fill="none" stroke="#e8c78a" stroke-width="48" stroke-linecap="round"/><path d="${rd}" fill="none" stroke="#f6deb0" stroke-width="30" stroke-linecap="round"/>`;
  s+=`<g transform="translate(1740,745)"><rect x="-95" y="-34" width="190" height="56" rx="10" fill="#c98a4b" ${S}/>${[-70,-40,-10,20,50].map(x=>`<path d="M${x} -34 V22" stroke="#a0673a" stroke-width="4"/>`).join('')}<path d="M-95 -40 H95" stroke="#4a3b36" stroke-width="12" stroke-linecap="round"/><path d="M-95 -40 H95" stroke="#e0a86a" stroke-width="6" stroke-linecap="round"/>${[-80,-40,0,40,80].map(x=>`<path d="M${x} -40 V-20" stroke="#4a3b36" stroke-width="6"/>`).join('')}</g>`;
  // decoracion: arboles, arbustos, flores, girasoles, vallas, farolas
@@ -2123,6 +2135,66 @@ const ENTAP={gato:'cat',perro:'dog',conejo:'rabbit',vaca:'cow',cerdito:'pig',gal
 function engTap(o){const en=ENTAP[o.k];if(!en||Math.random()>.45)return;setTimeout(()=>sayMix([['En ingl\u00e9s:','es'],[en,'en']]),650)}
 def('juegoEng',{fixed:1,w:130,h:130,d:tile('Hi!','#4f8bff',50),tap:()=>startQuiz('eng')});
 HINTS.cole.splice(1,0,['tap','juegoEng','\u00a1Aprende ingl\u00e9s con el b\u00faho!']);
+/* ---------- supermercado ---------- */
+def('leche',{cat:'food',w:70,h:100,d:svg('0 0 70 100',`<path d="M14 30 L22 6 H48 L56 30Z" fill="#7ec8ff" ${L}/><rect x="14" y="30" width="42" height="66" rx="6" fill="#ffffff" ${L}/><path d="M14 52 Q35 44 56 52 V74 Q35 66 14 74Z" fill="#7ec8ff"/><circle cx="35" cy="62" r="7" fill="#fff"/>`)});
+def('pan',{cat:'food',w:110,h:60,d:svg('0 0 110 60',`<path d="M8 40 Q4 14 30 12 H82 Q106 14 102 40 Q100 54 80 54 H30 Q10 54 8 40Z" fill="#e8b06a" ${L}/><path d="M30 22 L40 40 M50 20 L60 40 M70 22 L80 40" stroke="#b97a3a" stroke-width="5" stroke-linecap="round"/>`)});
+def('queso',{cat:'food',w:90,h:70,d:svg('0 0 90 70',`<path d="M6 62 V30 L70 8 L84 30 V62Z" fill="#ffd36b" ${L}/><path d="M6 30 H84" ${L}/><circle cx="28" cy="46" r="7" fill="#f2b400"/><circle cx="56" cy="40" r="5" fill="#f2b400"/><circle cx="66" cy="54" r="4" fill="#f2b400"/>`)});
+def('zumo',{cat:'food',w:70,h:100,d:svg('0 0 70 100',`<path d="M46 14 L52 2" ${L} stroke-width="5"/><rect x="12" y="14" width="46" height="82" rx="8" fill="#ff9f43" ${L}/><circle cx="35" cy="54" r="15" fill="#ffd36b" ${L} stroke-width="3"/><path d="M35 40 V68 M21 54 H49" stroke="#ff9f43" stroke-width="3"/>`)});
+def('uvas',{cat:'food',w:80,h:90,d:svg('0 0 80 90',`<path d="M40 14 Q44 2 54 4" fill="none" stroke="#6b8f2e" stroke-width="5" stroke-linecap="round"/><path d="M44 10 Q60 6 64 18 Q50 20 44 10Z" fill="#7ed957" ${L} stroke-width="3"/>`+[[28,26],[44,24],[60,28],[22,42],[38,40],[54,42],[30,56],[46,56],[38,72]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="11" fill="#a86ae0" ${L} stroke-width="3"/>`).join(''))});
+const SUPER={fruta:[['manzana',1],['platano',1],['uvas',2],['zanahoria',1]],desayuno:[['leche',2],['pan',1],['queso',2],['zumo',2]],dulces:[['galleta',1],['chocolate',2],['helado',2],['pastel',3]]};
+const SNAME={manzana:'una manzana',platano:'un pl\u00e1tano',uvas:'uvas',zanahoria:'una zanahoria',leche:'leche',pan:'pan',queso:'queso',zumo:'un zumo',galleta:'una galleta',chocolate:'un chocolate',helado:'un helado',pastel:'un pastel'};
+const SPRICE={};for(const s in SUPER)SUPER[s].forEach(([k,p])=>SPRICE[k]=p);
+let TAPP=null;
+function kd(k){const d=K[k].d;return typeof d==='function'?d({}):d}
+function inSvg(k,x,y,w,h){return kd(k).replace('<svg ',`<svg x="${x}" y="${y}" width="${w}" height="${h}" `)}
+function coinTag(x,y,n){return `<g transform="translate(${x},${y})"><rect x="-30" y="-16" width="60" height="32" rx="16" fill="#fff" ${L} stroke-width="3"/><circle cx="-12" cy="0" r="10" fill="#ffd23f" stroke="#c98a1a" stroke-width="3"/><text x="10" y="9" text-anchor="middle" font-size="24" ${FONT} fill="#58434f">${n}</text></g>`}
+function shelfSVG(sec,col){const it=SUPER[sec];let s=`<ellipse cx="170" cy="324" rx="160" ry="7" fill="rgba(60,40,30,.15)"/><rect x="10" y="10" width="320" height="310" rx="14" fill="${col}" ${L}/><rect x="24" y="24" width="292" height="282" rx="8" fill="#fffaf2"/>`;
+ [0,1].forEach(r=>{const y=r*140;s+=`<rect x="16" y="${140+y}" width="308" height="16" rx="6" fill="#d9a873" ${L} stroke-width="3"/>`;[0,1].forEach(c=>{const [k,p]=it[r*2+c];s+=inSvg(k,40+c*146,34+y,110,100)+coinTag(95+c*146,132+y,p)})});return svg('0 0 340 330',s)}
+function shelfTap(o,sec){const s=sz(o),p=TAPP||{x:o.x,y:o.y-s.h/2};const lx=(p.x-(o.x-s.w/2))/s.w,ly=(p.y-(o.y-s.h))/s.h;const c=lx<.5?0:1,r=ly<.47?0:1;const [k,pr]=SUPER[sec][r*2+c];
+ W.cart=W.cart||[];const cart=objs().find(q=>q.k==='carroSuper');if(W.cart.length>=6){SND.boing();say('\u00a1El carro est\u00e1 lleno! Ve a pagar a la caja.',1);return}
+ W.cart.push(k);SND.pop();cls(o,'squash');say(SNAME[k]+'. '+(pr===1?'Cuesta una moneda.':'Cuesta '+NUMW[pr]+' monedas.'),1);
+ if(cart){const n=spawn(k,o.x-s.w/2+(c+.5)*s.w/2,o.y-s.h+(r+.5)*s.h/2);n.z=null;tweenTo(n,cart.x,cart.y-120,600,()=>{removeObj(n);redraw(cart);objs().filter(q=>q.k==='cajaSuper').forEach(redraw);cls(cart,'squash');burst(cart.x,cart.y-140,'star',3)})}save()}
+def('estFruta',{fixed:1,w:300,h:290,d:shelfSVG('fruta','#7ed957'),tap:o=>shelfTap(o,'fruta')});
+def('estDesayuno',{fixed:1,w:300,h:290,d:shelfSVG('desayuno','#7ec8ff'),tap:o=>shelfTap(o,'desayuno')});
+def('estDulces',{fixed:1,w:300,h:290,d:shelfSVG('dulces','#ff8fc8'),tap:o=>shelfTap(o,'dulces')});
+def('carroSuper',{fixed:1,w:240,h:220,d:o=>{const c=(W&&W.cart)||[];let s=`<ellipse cx="120" cy="214" rx="100" ry="6" fill="rgba(60,40,30,.15)"/><path d="M10 30 H40 L62 150 H196" fill="none" stroke="#4a3b36" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 30 H40 L62 150 H196" fill="none" stroke="#ff6b6b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  c.slice(0,6).forEach((k,i)=>{s+=inSvg(k,56+(i%3)*44+(i>2?18:0),i>2?28:56,58,58)});
+  s+=`<path d="M44 56 H220 L204 136 H60Z" fill="#bfe6ff" fill-opacity=".45" ${L}/><path d="M60 76 H214 M64 96 H210 M68 116 H206 M90 56 L94 136 M130 56 L130 136 M170 56 L166 136" stroke="#4a3b36" stroke-width="3" opacity=".6"/><circle cx="80" cy="190" r="18" fill="#58434f"/><circle cx="80" cy="190" r="7" fill="#ccc"/><circle cx="184" cy="190" r="18" fill="#58434f"/><circle cx="184" cy="190" r="7" fill="#ccc"/><path d="M62 150 L80 176 M196 150 L184 176" stroke="#4a3b36" stroke-width="8"/>`;
+  return svg('0 0 240 220',s)},tap:o=>{const n=(W.cart||[]).length;cls(o,'squash');SND.pop();say(n?'Llevas '+(n<=10?NUMW[n]:n)+(n===1?' cosa':' cosas')+'. \u00a1Ve a pagar a la caja!':'El carro est\u00e1 vac\u00edo. \u00a1Toca las cosas de las estanter\u00edas!',1)}});
+const cartTotal=()=>(W.cart||[]).reduce((a,k)=>a+(SPRICE[k]||1),0);
+def('cajaSuper',{fixed:1,w:320,h:250,d:o=>{const t=W?cartTotal():0;return svg('0 0 320 250',`<ellipse cx="160" cy="244" rx="150" ry="7" fill="rgba(60,40,30,.15)"/><rect x="10" y="110" width="300" height="130" rx="14" fill="#7ed9c0" ${L}/><rect x="10" y="100" width="300" height="24" rx="10" fill="#d9f5ec" ${L}/><path d="M30 112 H180" stroke="#4a3b36" stroke-width="4" stroke-dasharray="10 8" opacity=".5"/><rect x="200" y="30" width="96" height="74" rx="10" fill="#ffd36b" ${L}/><rect x="212" y="40" width="72" height="32" rx="6" fill="#58434f"/><text x="248" y="66" text-anchor="middle" font-size="26" ${FONT} fill="#7ed957">${t}</text><rect x="214" y="78" width="16" height="12" rx="3" fill="#fff"/><rect x="240" y="78" width="16" height="12" rx="3" fill="#fff"/><rect x="266" y="78" width="16" height="12" rx="3" fill="#fff"/>`)},
+ tap:o=>{cls(o,'squash');openPay()}});
+function superScene(){return [mk('estFruta',260,600),mk('estDesayuno',620,600),mk('estDulces',980,600),mk('carroSuper',560,860),mk('cajaSuper',1300,860),
+ mk('char',1420,700,{name:'Cajera',look:Object.assign(look(SKINS[1],'coleta',HAIRC[2],'#7ed9c0','#3d5a99','gorra'),{})})]}
+SC.super={floor:640,bgc:'#eafaf3'};
+BG.super=svg('0 0 1600 900',`<defs><pattern id="suT" width="120" height="120" patternUnits="userSpaceOnUse"><rect width="120" height="120" fill="#f4fbf8"/><rect width="60" height="60" fill="#e3f5ee"/><rect x="60" y="60" width="60" height="60" fill="#e3f5ee"/></pattern></defs>
+ <rect width="1600" height="640" fill="#eafaf3"/><rect y="0" width="1600" height="90" fill="#7ed9c0"/>${XS(17).map(i=>`<path d="M${i*100} 90 h50 l-25 30z" fill="#fff"/><path d="M${i*100+50} 90 h50 l-25 30z" fill="#7ed9c0"/>`).join('')}
+ <rect x="560" y="18" width="480" height="64" rx="32" fill="#fff" stroke="#4a3b36" stroke-width="5"/><text x="800" y="64" text-anchor="middle" font-size="44" ${FONT} fill="#ff6b6b" stroke="#fff" stroke-width="6" paint-order="stroke">SUPERMERCADO</text>
+ <g transform="translate(1180,170)"><rect width="380" height="300" rx="12" fill="#d8f0ff" stroke="#4a3b36" stroke-width="6"/>${[0,1].map(i=>`<rect x="${14+i*184}" y="14" width="168" height="272" rx="8" fill="#bfe6ff" stroke="#4a3b36" stroke-width="4"/><path d="M${30+i*184} 30 L${80+i*184} 120" stroke="#fff" stroke-width="10" opacity=".6"/><rect x="${150+i*184}" y="120" width="10" height="60" rx="5" fill="#fff" stroke="#4a3b36" stroke-width="3"/>`).join('')}${[0,1,2].map(r=>`<path d="M20 ${100+r*80} H360" stroke="#7ec8ff" stroke-width="6"/>`).join('')}</g>
+ <g transform="translate(0,640)"><rect width="1600" height="260" fill="url(#suT)"/></g><rect x="0" y="632" width="1600" height="14" fill="#fff" stroke="#4a3b36" stroke-width="3"/>`);
+LIGHT.super=`<div class="vig"></div>`;
+PLACE.super='\u00a1El supermercado!';
+HINTS.super=[['tap','estFruta','\u00a1Toca la comida para meterla en el carro!'],['tap','carroSuper','\u00a1Toca el carro para ver lo que llevas!'],['tap','cajaSuper','\u00a1Paga en la caja con tus monedas!']];
+/* pagar contando monedas */
+let PAY=null;
+function openPay(){const c=W.cart||[];if(!c.length){SND.boing();say('Primero coge cosas de las estanter\u00edas.',1);return}PAY={total:cartTotal(),paid:0,done:false};OV='pay';$('pay').classList.add('open');payUI();
+ say('Son '+(PAY.total<=10?NUMW[PAY.total]:PAY.total)+(PAY.total===1?' moneda':' monedas')+'. \u00a1Toca tu monedero para pagar!',1)}
+function payUI(){const c=W.cart||[];const have=W.coins||0;
+ $('payIn').innerHTML=`<div class="pitems">${c.map((k,i)=>`<div class="pit" data-i="${i}">${shade(kd(k))}<span>${SPRICE[k]}</span></div>`).join('')}</div>
+ <div class="pslots">${Array.from({length:PAY.total},(_,i)=>`<i class="${i<PAY.paid?'on':''}">${COINSVG}</i>`).join('')}</div>
+ <div class="pbag${have?'':' empty'}" id="pBag"><svg viewBox="0 0 100 100"><path d="M14 40 Q14 22 50 22 Q86 22 86 40 V78 Q86 92 50 92 Q14 92 14 78Z" fill="#ff8fc8" stroke="#58434f" stroke-width="5"/><path d="M30 26 Q30 8 50 8 Q70 8 70 26" fill="none" stroke="#58434f" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#ffd23f" stroke="#58434f" stroke-width="4"/></svg><b>${have}</b></div>`}
+function payClose(){if(PAY&&!PAY.done&&PAY.paid){W.coins=(W.coins||0)+PAY.paid;shownCoins=null;starUI()}PAY=null;$('pay').classList.remove('open');OV=null;save();objs().filter(o=>o.k==='cajaSuper'||o.k==='carroSuper').forEach(redraw)}
+$('pay').addEventListener('pointerdown',e=>{const t=e.target;if(!PAY)return;
+ if(t.closest('#payClose')){SND.pop();payClose();return}if(PAY.done)return;
+ const it=t.closest('.pit');if(it&&PAY.paid===0){W.cart.splice(+it.dataset.i,1);SND.trash();if(!W.cart.length){say('Has quitado todo.',1);payClose();return}PAY.total=cartTotal();payUI();say('Lo quitamos. Ahora son '+NUMW[Math.min(10,PAY.total)]+'.',1);return}
+ if(t.closest('#pBag')){if(!(W.coins>0)){SND.boing();say('\u00a1No te quedan monedas! Quita algo tocando la comida, o gana m\u00e1s monedas en el cole.',1);cls2($('pBag'));return}
+  W.coins--;PAY.paid++;shownCoins=null;starUI(true);SND.cling();say(NUMW[PAY.paid]||String(PAY.paid),1);payUI();
+  const sl=$('payIn').querySelectorAll('.pslots i')[PAY.paid-1];if(sl)sl.animate([{transform:'translateY(-60px) scale(1.4)'},{transform:'none'}],{duration:300});
+  if(PAY.paid>=PAY.total){PAY.done=true;const bought=W.cart.splice(0);bought.forEach(k=>W.pocket.push(mk(k,0,0)));pocketUI();save();
+   setTimeout(()=>{SND.fanfare();party();say('\u00a1Pagado! \u00a1Gracias! Est\u00e1 todo en tu bolsa. T\u00f3cala en casa para sacarlo.',1)},500);setTimeout(payClose,4200)}}});
+[['leche','milk','leche'],['pan','bread','pan'],['queso','cheese','queso'],['zumo','juice','zumo'],['uvas','grapes','uvas']].forEach(([k,en,es])=>ENV.food.push({pic:()=>kd(k),en,es}));
+const MAPSUPER=`<g class="loc" data-go="super"><ellipse cx="800" cy="604" rx="150" ry="16" fill="rgba(60,40,30,.18)"/><rect x="666" y="470" width="268" height="132" rx="10" fill="#eafaf3" stroke="#4a3b36" stroke-width="6"/><path d="M656 456 H944 V486 H656Z" fill="#7ed9c0" stroke="#4a3b36" stroke-width="5"/>${[0,1,2,3,4,5,6].map(i=>`<path d="M${656+i*41} 486 q20 22 41 0" fill="${i%2?'#7ed9c0':'#fff'}" stroke="#4a3b36" stroke-width="4"/>`).join('')}<rect x="700" y="400" width="200" height="56" rx="16" fill="#fff" stroke="#4a3b36" stroke-width="5"/><text x="800" y="440" text-anchor="middle" font-size="34" font-weight="700" font-family="Fredoka,Arial Rounded MT Bold,Arial" fill="#ff6b6b">SUPER</text><rect x="760" y="520" width="80" height="82" rx="6" fill="#bfe6ff" stroke="#4a3b36" stroke-width="4"/><path d="M800 520 V602" stroke="#4a3b36" stroke-width="4"/><rect x="684" y="520" width="60" height="50" rx="6" fill="#bfe6ff" stroke="#4a3b36" stroke-width="4"/><rect x="856" y="520" width="60" height="50" rx="6" fill="#bfe6ff" stroke="#4a3b36" stroke-width="4"/><circle cx="700" cy="560" r="8" fill="#ff6b6b"/><circle cx="716" cy="562" r="8" fill="#ffd23f"/><circle cx="730" cy="560" r="8" fill="#7ed957"/><circle cx="872" cy="560" r="8" fill="#ff9f43"/><circle cx="888" cy="562" r="8" fill="#a86ae0"/><circle cx="902" cy="560" r="8" fill="#ff6b6b"/></g>`;
+
 load();ensureScenes();ensureMara();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
