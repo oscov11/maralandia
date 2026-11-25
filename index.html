@@ -414,6 +414,14 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 #bPet{position:absolute;top:26px;right:350px;width:140px;height:140px;border-radius:50%;background:#e6ffdc;border:6px solid #fff;box-shadow:0 8px 0 rgba(60,40,30,.25);display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:auto;overflow:visible}
 #bPet svg{width:72%;height:72%}
 #petBadge{display:none;animation:wantp .7s ease-in-out infinite alternate}
+#reto{position:absolute;right:40px;top:260px;width:230px;height:270px;z-index:300000;pointer-events:auto;display:none}
+#reto.show{display:block;animation:retoIn .9s cubic-bezier(.3,1.4,.5,1)}
+#reto .rowl{position:absolute;inset:0;animation:retoBob 1s ease-in-out infinite alternate;transform-origin:50% 100%}
+#reto .rowl svg{width:100%;height:100%}
+#reto .rq{position:absolute;left:-70px;top:-10px;width:120px;height:120px;border-radius:50%;background:#ffd23f;box-shadow:0 0 0 6px #fff,0 0 0 10px #4a3b36,0 8px 0 10px rgba(60,40,30,.25);display:flex;align-items:center;justify-content:center;font:700 80px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#4a3b36;animation:wantp .6s ease-in-out infinite alternate}
+#reto .rq::after{content:'';position:absolute;right:-6px;bottom:4px;width:30px;height:30px;border-radius:50%;background:#ffd23f;box-shadow:0 0 0 6px #fff,0 0 0 10px #4a3b36}
+@keyframes retoIn{from{transform:translateX(420px) rotate(20deg)}to{transform:none}}
+@keyframes retoBob{to{transform:translateY(-16px) rotate(-4deg)}}
 </style>
 </head>
 <body>
@@ -1540,10 +1548,10 @@ const OWL=`<svg viewBox="0 0 230 280"><ellipse cx="115" cy="270" rx="80" ry="8" 
 let Q=null;
 function owlTalk(){const e=$('qOwl');e.classList.remove('talk');void e.offsetWidth;e.classList.add('talk')}
 function qSay(t){say(t,1);owlTalk()}
-function startQuiz(mode){Q={mode,round:0,res:[]};closeTray();$('quiz').classList.add('open');$('qOwl').innerHTML=shade(OWL);
- qSay({voc:'\u00a1Vamos a jugar con las vocales!',let:'\u00a1Vamos a jugar con las letras!',num:'\u00a1Vamos a contar!'}[mode]);setTimeout(()=>{if(Q)nextQ()},1900)}
-function renderDots(){$('qDots').innerHTML=Array.from({length:5},(_,i)=>{const r=Q.res[i];return r===undefined?`<svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="16" fill="none" stroke="#fff" stroke-width="4" opacity=".6"/></svg>`:`<svg viewBox="0 0 46 46"><path d="M23 2 L28 17 L44 17 L31 27 L36 43 L23 33 L10 43 L15 27 L2 17 L18 17Z" fill="${r?'#ffd23f':'#e2e2e2'}" stroke="#4a3b36" stroke-width="3" stroke-linejoin="round"/></svg>`}).join('')}
-function nextQ(){if(!Q)return;if(Q.round>=5)return endQuiz();Q.round++;Q.tries=0;Q.count=0;Q.lock=false;
+function startQuiz(mode,o){o=o||{};Q={mode,round:0,res:[],len:o.len||5,reward:o.reward||3,reto:!!o.reto};closeTray();$('quiz').classList.add('open');$('qOwl').innerHTML=shade(OWL);
+ qSay((Q.reto?'\u00a1Reto sorpresa! ':'')+{voc:'\u00a1Vamos a jugar con las vocales!',let:'\u00a1Vamos a jugar con las letras!',num:'\u00a1Vamos a contar!'}[mode]);setTimeout(()=>{if(Q)nextQ()},1900)}
+function renderDots(){$('qDots').innerHTML=Array.from({length:Q.len},(_,i)=>{const r=Q.res[i];return r===undefined?`<svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="16" fill="none" stroke="#fff" stroke-width="4" opacity=".6"/></svg>`:`<svg viewBox="0 0 46 46"><path d="M23 2 L28 17 L44 17 L31 27 L36 43 L23 33 L10 43 L15 27 L2 17 L18 17Z" fill="${r?'#ffd23f':'#e2e2e2'}" stroke="#4a3b36" stroke-width="3" stroke-linejoin="round"/></svg>`}).join('')}
+function nextQ(){if(!Q)return;if(Q.round>=Q.len)return endQuiz();Q.round++;Q.tries=0;Q.count=0;Q.lock=false;
  const r=Q.round,m=Q.mode;let target,opts,pic='',text;
  if(m==='voc'||m==='let'){const pool=m==='voc'?VOW:CONS;target=pick(pool.filter(x=>x!==Q.last));Q.last=target;opts=shuffle([target,...shuffle(pool.filter(x=>x!==target)).slice(0,2)]);
   if(r%2){const w=WORDS[target];pic=`<div class="big">${shade(picFor(w))}</div>`;text=`\u00a1${w[0].toUpperCase()+w.slice(1)}! \u00bfCon qu\u00e9 letra empieza ${w}?`}
@@ -1557,9 +1565,9 @@ function nextQ(){if(!Q)return;if(Q.round>=5)return endQuiz();Q.round++;Q.tries=0
  $('qPic').innerHTML=pic;$('qPic').classList.toggle('many',m==='num'&&!!(r%2));
  $('qOpts').innerHTML=opts.map((o,i)=>`<div class="qo" data-v="${o}" style="background:${LCOL[(i*2+r)%LCOL.length]}"><span>${o}</span></div>`).join('');
  renderDots();qSay(text)}
-function endQuiz(){const good=Q.res.filter(Boolean).length;$('qOpts').innerHTML='';setTimeout(()=>giveCoins(3,$('qPic')),600);
+function endQuiz(){const good=Q.res.filter(Boolean).length;$('qOpts').innerHTML='';const rw=Q.reward;setTimeout(()=>giveCoins(rw,$('qPic')),600);if(Q.reto)W.retos=(W.retos||0)+1;
  $('qPic').classList.remove('many');$('qPic').innerHTML=`<div class="big medal">${shade(svg('0 0 200 200',`<path d="M70 10 L100 80 L130 10Z" fill="#4fc3f7" ${L}/><path d="M60 10 H90 L110 70 H90Z M140 10 H110 L90 70 H110Z" fill="#ff6b8b" ${L}/><circle cx="100" cy="128" r="62" fill="#ffd23f" ${L}/><circle cx="100" cy="128" r="44" fill="#ffe680" ${L}/><path d="M100 96 L109 118 L132 118 L114 132 L121 156 L100 142 L79 156 L86 132 L68 118 L91 118Z" fill="#ffb347" ${L}/>`))}</div>`;
- party();qSay((good>=4?'\u00a1Lo has hecho genial!':'\u00a1Muy bien!')+' \u00a1Y tres monedas de premio!');save();setTimeout(closeQuiz,4200)}
+ party();qSay((good>=Q.len-1?'\u00a1Lo has hecho genial!':'\u00a1Muy bien!')+' \u00a1Y '+NUMW[rw]+' monedas de premio!');save();setTimeout(closeQuiz,4200)}
 function closeQuiz(){Q=null;$('quiz').classList.remove('open');try{speechSynthesis.cancel()}catch(e){}}
 $('qClose').addEventListener('pointerdown',e=>{e.stopPropagation();SND.pop();closeQuiz()});
 $('qRep').addEventListener('pointerdown',e=>{e.stopPropagation();if(Q&&Q.text)qSay(Q.text)});
@@ -1814,6 +1822,15 @@ setInterval(()=>{if(!W||!W.pet)return;petDecay();if(OV==='pet')petMood();else pe
 const bPet=document.createElement('div');bPet.id='bPet';bPet.innerHTML=`<svg viewBox="0 0 60 60"><circle cx="30" cy="38" r="12" fill="#c98a4b" stroke="#4a3b36" stroke-width="3"/><circle cx="15" cy="24" r="6.5" fill="#c98a4b" stroke="#4a3b36" stroke-width="3"/><circle cx="25" cy="13" r="6.5" fill="#c98a4b" stroke="#4a3b36" stroke-width="3"/><circle cx="37" cy="13" r="6.5" fill="#c98a4b" stroke="#4a3b36" stroke-width="3"/><circle cx="47" cy="24" r="6.5" fill="#c98a4b" stroke="#4a3b36" stroke-width="3"/></svg><div class="badge" id="petBadge">!</div>`;
 $('stage').appendChild(bPet);bPet.addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.pop();openPet()});
 
+/* ---------- reto sorpresa cada x tiempo ---------- */
+const RETO_SEC=+(new URLSearchParams(location.search).get('reto'))||240;let retoT=0,retoOn=false,retoNag=0,retoLast=null;
+const retoEl=document.createElement('div');retoEl.id='reto';retoEl.innerHTML=`<div class="rowl"></div><div class="rq">?</div>`;$('stage').appendChild(retoEl);
+function retoShow(){retoOn=true;retoNag=0;retoEl.querySelector('.rowl').innerHTML=shade(OWL);retoEl.classList.add('show');SND.whee();say('\u00a1Reto sorpresa! \u00a1T\u00f3came!',1)}
+function retoGo(){retoOn=false;retoT=0;retoEl.classList.remove('show');const m=pick(['voc','let','num'].filter(x=>x!==retoLast));retoLast=m;closeTray();startQuiz(m,{len:3,reward:5,reto:1})}
+retoEl.addEventListener('pointerdown',e=>{e.stopPropagation();ac();SND.pop();retoGo()});
+setInterval(()=>{if(!W||document.hidden||OV||Q||(typeof TR!=='undefined'&&TR)||$('intro').classList.contains('open'))return;
+ if(retoOn){if(++retoNag%25===0){say('\u00a1Tengo un reto para ti!',1);SND.pop()}return}
+ if(++retoT>=RETO_SEC)retoShow()},1000);
 load();ensureScenes();ensureMara();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
