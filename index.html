@@ -678,7 +678,9 @@ function maraChar(x,y,extra){return mk('char',x,y,Object.assign({name:'Mara',loo
 function ensureMara(){for(const n in W.sc)if(W.sc[n].some(o=>o.name==='Mara'))return;if(W.pocket.some(o=>o.name==='Mara'))return;W.sc.casa.push(maraChar(800,880))}
 const KEY='mundoGominola_v1';
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.sc){W=s;uid=s.uid||999;return}}catch(e){}W=fresh()}
-let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{W.uid=uid;const c=JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v);try{localStorage.setItem(KEY,c)}catch(e){}},300)}
+let saveT;function saveNow(){clearTimeout(saveT);if(!W)return;W.uid=uid;const c=JSON.stringify(W,(k,v)=>k[0]==='_'?undefined:v);try{localStorage.setItem(KEY,c)}catch(e){}}
+function save(){clearTimeout(saveT);saveT=setTimeout(saveNow,300)}
+addEventListener('pagehide',saveNow);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});setInterval(saveNow,15000);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 const objs=()=>W.sc[W.cur]||[];
 const byId=id=>objs().find(o=>o.id==id);
 const els=new Map();
@@ -1290,7 +1292,7 @@ $('tArea').addEventListener('pointerdown',e=>{const w=e.target.closest('.tw');if
 
 const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
 
-load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';muteUI();go(W.cur||'map');syncReset();
+load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';muteUI();go('map');syncReset();
 }
 </script>
 </body>
