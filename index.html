@@ -345,6 +345,25 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
 #creator .whang{left:230px;bottom:0;gap:18px}
 #creator .wh{width:120px;height:120px;background:rgba(255,255,255,.85)}
 #creator #add{right:30px!important;bottom:200px!important}#creator #ok{right:30px!important;bottom:30px!important}
+/* --- pulido visual --- */
+.btn,.big,.room,.tbtn,.bb,.xclose,.arrow,#bMail,#bAlbum,.qo{overflow:visible}
+.btn::after,.big::after,.room::after,.tbtn::after,.bb::after,.xclose::after,.arrow::after,.qo::after{content:'';position:absolute;left:16%;right:16%;top:7%;height:36%;border-radius:50%/60% 60% 40% 40%;background:linear-gradient(rgba(255,255,255,.6),rgba(255,255,255,0));pointer-events:none}
+.btn,.big,.room,.tbtn,.bb,.xclose,.arrow{box-shadow:0 8px 0 rgba(60,40,30,.25),inset 0 -8px 0 rgba(0,0,0,.12)!important;transition:transform .12s cubic-bezier(.3,1.6,.5,1)}
+.btn:active,.big:active,.room:active,.tbtn:active,.bb:active,.xclose:active,.arrow:active{transform:translateY(5px) scale(.94)!important;box-shadow:0 3px 0 rgba(60,40,30,.25),inset 0 -4px 0 rgba(0,0,0,.12)!important}
+.it{background:linear-gradient(#ffffff,#fff6ec)!important;box-shadow:0 7px 0 #f1dcc0,inset 0 0 0 4px #fff!important;transition:transform .12s}
+.it:active{transform:scale(.92)}
+#tray{background:linear-gradient(#fffaf2,#ffefd6)!important;box-shadow:0 -12px 0 rgba(60,40,30,.1),inset 0 6px 0 rgba(255,255,255,.8)!important}
+.tab{box-shadow:0 5px 0 #f1cf98}.tab.on{box-shadow:0 5px 0 #ffb347}
+.tapfx{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:8px solid rgba(255,255,255,.85);pointer-events:none;z-index:440000;animation:tapfx .45s ease-out forwards}
+@keyframes tapfx{from{transform:scale(.2);opacity:1}to{transform:scale(1);opacity:0}}
+.tapst{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;background:#fff6b0;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);pointer-events:none;z-index:440001;animation:tapst .6s ease-out forwards}
+@keyframes tapst{from{transform:translate(0,0) scale(.4)}to{transform:translate(var(--dx),var(--dy)) scale(1) rotate(90deg);opacity:0}}
+.puff{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.85);pointer-events:none;z-index:200000;animation:puff .5s ease-out forwards}
+@keyframes puff{from{transform:translate(0,0) scale(.3);opacity:.9}to{transform:translate(var(--dx),-14px) scale(1.2);opacity:0}}
+#curtain{position:absolute;left:-20px;right:-20px;top:-40px;height:1000px;z-index:480000;pointer-events:none;display:none}
+#curtain svg{width:100%;height:100%}
+#curtain.run{display:block;animation:curt .75s cubic-bezier(.6,0,.4,1) forwards}
+@keyframes curt{0%{transform:translateY(-105%)}40%,55%{transform:translateY(0)}100%{transform:translateY(-105%)}}
 @media (prefers-reduced-motion:reduce){.loc,.eyes{animation:none}}
 </style>
 </head>
@@ -385,6 +404,7 @@ html,body{margin:0;height:100%;width:100%;position:fixed;inset:0;overflow:hidden
   <div id="cloud"><div class="cbox"><h2>Guardado en la nube</h2><p class="cs" id="cStatus"></p><div class="crow"><span>C&#243;digo de la familia</span><b id="cCode">&#8212;</b><button id="cCopy">Copiar</button></div><button id="cNew" class="cmain">Crear c&#243;digo nuevo</button><div class="crow"><input id="cInput" placeholder="Usar otro c&#243;digo: MARA-XXXXXX" autocapitalize="characters" autocomplete="off"><button id="cJoin">Usar</button></div><p class="cs small">Pon el mismo c&#243;digo en cada m&#243;vil o tablet y todos comparten la partida.</p><button id="cClose" class="cclose">Cerrar</button></div></div>
   <div id="musPick"></div>
   <div id="intro"></div>
+  <div id="curtain"><svg viewBox="0 0 1600 1000" preserveAspectRatio="none"><defs><linearGradient id="cuG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff8fc8"/><stop offset=".25" stop-color="#ffb3d9"/><stop offset=".5" stop-color="#ff7ab8"/><stop offset=".75" stop-color="#ffb3d9"/><stop offset="1" stop-color="#ff8fc8"/></linearGradient><pattern id="cuP" width="200" height="1000" patternUnits="userSpaceOnUse"><rect width="200" height="1000" fill="url(#cuG)"/></pattern></defs><path d="M0 0 H1600 V930 Q1550 990 1500 930 Q1450 990 1400 930 Q1350 990 1300 930 Q1250 990 1200 930 Q1150 990 1100 930 Q1050 990 1000 930 Q950 990 900 930 Q850 990 800 930 Q750 990 700 930 Q650 990 600 930 Q550 990 500 930 Q450 990 400 930 Q350 990 300 930 Q250 990 200 930 Q150 990 100 930 Q50 990 0 930Z" fill="url(#cuP)" stroke="#4a3b36" stroke-width="6"/><g fill="#fff6b0"><path d="M300 300 l9 22 24 2 -18 15 6 24 -21 -13 -21 13 6 -24 -18 -15 24 -2z"/><path d="M800 520 l9 22 24 2 -18 15 6 24 -21 -13 -21 13 6 -24 -18 -15 24 -2z"/><path d="M1300 280 l9 22 24 2 -18 15 6 24 -21 -13 -21 13 6 -24 -18 -15 24 -2z"/><path d="M520 720 l9 22 24 2 -18 15 6 24 -21 -13 -21 13 6 -24 -18 -15 24 -2z"/><path d="M1120 760 l9 22 24 2 -18 15 6 24 -21 -13 -21 13 6 -24 -18 -15 24 -2z"/></g><text x="800" y="480" text-anchor="middle" font-size="120" font-weight="700" fill="#fff" stroke="#4a3b36" stroke-width="10" paint-order="stroke" font-family="Fredoka,Arial Rounded MT Bold,sans-serif">Maralandia</text></svg></div>
   <div id="hand"><i class="rip"></i><svg viewBox="0 0 110 130"><path d="M30 14 Q30 4 40 4 Q50 4 50 14 V58 Q54 50 62 52 Q70 54 70 62 Q74 56 82 58 Q90 60 90 70 Q94 66 100 68 Q108 72 106 84 L100 106 Q94 124 74 124 H52 Q36 124 28 110 L12 82 Q8 72 16 68 Q24 66 30 76Z" fill="#fff" stroke="#4a3b36" stroke-width="5" stroke-linejoin="round"/><path d="M50 60 V80 M70 64 V82 M90 72 V86" stroke="#d8c8c0" stroke-width="3" stroke-linecap="round"/></svg></div>
   <div id="modal"><div class="box">
     <svg viewBox="0 0 60 60" width="120"><path d="M46 30 A16 16 0 1 1 40 17" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round"/><path d="M34 8 L44 16 L34 24" fill="none" stroke="#ff6b6b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -828,7 +848,7 @@ function settle(o){if(K[o.k]&&K[o.k].cat==='animal'&&W.cur==='vet'){const t=objs
  if(!on){if(ty<fl)ty=fl+rnd(10,50);if(ty>888)ty=888}
  const dist=Math.abs(ty-o.y);o.on=on?on.id:null;
  if(dist<3){place(o);save();return}
- tweenTo(o,o.x,ty,Math.min(520,160+dist*0.9),()=>{SND.drop();cls(o,'squash');place(o)},t=>t*t);
+ tweenTo(o,o.x,ty,Math.min(520,160+dist*0.9),()=>{SND.drop();cls(o,'squash');place(o);if(dist>60)puff(o.x,o.y)},t=>t*t);
 }
 function sitOn(c,f,si){const s=K[f.k].seats[si];c.sit=f.id;c.seat=si;c.on=null;c.x=f.x+s.dx;c.y=f.y+s.dy+30;draw(c);SND.pop();
  if(K[f.k].swing)startSwing(f,c);
@@ -1383,7 +1403,8 @@ const cv=$('snow'),cx=cv.getContext('2d');const flakes=Array.from({length:90},()
 let snowWas=true;function snow(){if(!snowOn){if(snowWas){cx.clearRect(0,0,cv.width,900);snowWas=false}requestAnimationFrame(snow);return}snowWas=true;cx.clearRect(0,0,SW,900);{cx.fillStyle='rgba(255,255,255,.9)';for(const f of flakes){f.y+=f.s;f.w+=.02;f.x+=Math.sin(f.w)*.6;if(f.y>905){f.y=-10;f.x=rnd(0,SW)}cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}requestAnimationFrame(snow)}snow();
 
 /* ---------- escenas ---------- */
-function go(name){if(typeof OV!=='undefined'&&OV==='cr')OV=null;$('stars').style.visibility='';drags.clear();closeTray();if(typeof TR!=='undefined'&&TR)closeTrace();if(typeof BUY!=='undefined'&&BUY)closeBuy();if(typeof Q!=='undefined'&&Q)closeQuiz();want=null;if(W.sc[W.cur])W.sc[W.cur].forEach(c=>c._wish=null);wishT=performance.now()-9000;$('creator').classList.remove('open');W.cur=name;objL.innerHTML='';els.clear();
+let goT=null,goFirst=true;function go(name){if(goFirst){goFirst=false;return goNow(name)}const c=$('curtain');if(c.classList.contains('run'))return;c.classList.add('run');SND.swoosh&&0;clearTimeout(goT);goT=setTimeout(()=>goNow(name),330);setTimeout(()=>c.classList.remove('run'),780)}
+function goNow(name){if(typeof OV!=='undefined'&&OV==='cr')OV=null;$('stars').style.visibility='';drags.clear();closeTray();if(typeof TR!=='undefined'&&TR)closeTrace();if(typeof BUY!=='undefined'&&BUY)closeBuy();if(typeof Q!=='undefined'&&Q)closeQuiz();want=null;if(W.sc[W.cur])W.sc[W.cur].forEach(c=>c._wish=null);wishT=performance.now()-9000;$('creator').classList.remove('open');W.cur=name;objL.innerHTML='';els.clear();
  if(name==='map'){$('rooms').style.display='none';mapL.style.display='block';mapL.innerHTML=shade(widen(MAP).replace('<text x="800" y="160"',MAPNEW+MAPSHOP+MAPVET+'<text x="800" y="160"'));$('light').innerHTML='<div class="vig"></div>';fitSvg();bg.innerHTML='';ui.style.display='none';snowOn=true;document.body.style.background='#8fd3ff';save();return}
  mapL.style.display='none';ui.style.display='block';bg.innerHTML=shade(widen(BG[name]));fitSvg();$('light').innerHTML=LIGHT[name]||'';snowOn=name==='parque';document.body.style.background=SC[name].bgc;
  objs().forEach(draw);requestAnimationFrame(()=>objs().forEach(c=>{if(c.sit){const f=byId(c.sit);if(f&&K[f.k].swing)startSwing(f,c);else if(f&&K[f.k].slide)slideDown(c,f);else if(f&&K[f.k].bed){c._sleep=true;draw(c)}else if(f&&K[f.k].bath){c._bath=true;draw(c)}else if(!f)c.sit=null}}));
@@ -1666,6 +1687,10 @@ function introSave(){const e=$('iSave');if(!e)return;e.textContent=cloudState===
 $('intro').addEventListener('pointerdown',e=>{if(!e.target.closest('#iPlay'))return;e.stopPropagation();ac();tryFS();SND.fanfare();
  const el=$('intro');el.classList.add('go');musicSet(W.song||'navidad');setTimeout(()=>say('\u00a1Hola Mara! \u00a1Bienvenida a Maralandia!',1),500);setTimeout(()=>{el.classList.remove('open','go');el.innerHTML=''},900)});
 
+function puff(x,y){for(let i=0;i<4;i++){const e=document.createElement('div');e.className='puff';e.style.left=(x+OFF+(i-1.5)*24)+'px';e.style.top=(y-6)+'px';e.style.setProperty('--dx',((i-1.5)*30)+'px');stage.appendChild(e);setTimeout(()=>e.remove(),520)}}
+document.addEventListener('pointerdown',e=>{const r=stage.getBoundingClientRect();const x=(e.clientX-r.left)/scale,y=(e.clientY-r.top)/scale;if(x<0||y<0||x>SW||y>900)return;
+ const ring=document.createElement('div');ring.className='tapfx';ring.style.left=x+'px';ring.style.top=y+'px';stage.appendChild(ring);setTimeout(()=>ring.remove(),470);
+ for(let i=0;i<3;i++){const s=document.createElement('div');s.className='tapst';s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*6.28;s.style.setProperty('--dx',Math.cos(a)*70+'px');s.style.setProperty('--dy',Math.sin(a)*70+'px');stage.appendChild(s);setTimeout(()=>s.remove(),620)}},true);
 const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;mb.style.display=m;if(m==='none')$('musPick').classList.remove('open');bMail.style.display=m;bAlb.style.display=m;bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
 
 load();ensureScenes();ensureMara();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
