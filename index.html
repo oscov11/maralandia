@@ -730,9 +730,9 @@ function slideDown(c,f){if(c.sit!=f.id)return;SND.whee();say('¡Uiiiii!');const 
 let scale=1;
 let SW=1600,OFF=0;
 function fitSvg(){for(const sv of [bg.firstElementChild,mapL.firstElementChild])if(sv&&sv.tagName.toLowerCase()==='svg'){sv.setAttribute('viewBox',`${-OFF} 0 ${SW} 900`);sv.setAttribute('preserveAspectRatio','xMidYMid slice')}}
-function vpSize(){const v=window.visualViewport;const w=v?v.width:innerWidth,h=v?v.height:innerHeight;return{w:Math.min(w,document.documentElement.clientWidth||w),h:Math.min(h,document.documentElement.clientHeight||h)}}
+function vpSize(){const v=window.visualViewport;const w=v?v.width:innerWidth,h=v?v.height:innerHeight;let W2=Math.min(w,document.documentElement.clientWidth||w),H2=Math.min(h,document.documentElement.clientHeight||h);try{const a=screen.width,b=screen.height;if(a>0&&b>0){const sh=Math.min(a,b),lg=Math.max(a,b);if(W2>H2){H2=Math.min(H2,sh);W2=Math.min(W2,lg)}else{H2=Math.min(H2,lg);W2=Math.min(W2,sh)}}}catch(e){}return{w:W2,h:H2}}
 function fit(){const V=vpSize(),innerWidth=V.w,innerHeight=V.h;SW=Math.round(Math.min(2200,Math.max(1600,900*innerWidth/innerHeight)));OFF=(SW-1600)/2;scale=Math.min(innerWidth/SW,innerHeight/900);
- stage.style.width=SW+'px';stage.style.transform=`translate(${(innerWidth-SW*scale)/2}px,${(innerHeight-900*scale)/2}px) scale(${scale})`;
+ stage.style.width=SW+'px';stage.style.transform=`translate(${(innerWidth-SW*scale)/2}px,${Math.max(0,(innerHeight-900*scale)/2)}px) scale(${scale})`;
  for(const id of ['objs','light']){const e=$(id);e.style.left=OFF+'px';e.style.width='1600px';e.style.right='auto'}
  const c=$('snow');c.width=SW;c.style.width=SW+'px';fitSvg()}
 addEventListener('resize',fit);fit();
