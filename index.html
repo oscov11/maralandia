@@ -495,6 +495,10 @@ body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:pa
 .xgarl{position:absolute;left:-300px;right:-300px;top:0;height:100px;pointer-events:none}.xgarl svg{width:100%;height:100%}
 .sleigh{animation:sleigh 45s linear infinite}@keyframes sleigh{from{transform:translate(-400px,40px)}50%{transform:translate(1900px,0px)}to{transform:translate(4200px,40px)}}
 #mTitle{width:540px!important;margin-left:-270px!important}#mTitle svg{overflow:visible}
+html.rot,html.rot body{inset:auto!important;left:0!important;top:0!important}
+html.rot body{transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
+html.rot #rot{display:none!important}
+#rot{z-index:999999!important}
 </style>
 </head>
 <body>
@@ -555,6 +559,15 @@ body.dragging .obj:not(.lifted) *,body.dragging #light *{animation-play-state:pa
 </defs></svg>
 <div id="rot"><svg viewBox="0 0 100 100"><rect x="30" y="10" width="40" height="80" rx="8" fill="#fff" stroke="#4a3b36" stroke-width="4"/><circle cx="50" cy="80" r="4" fill="#4a3b36"/></svg></div>
 
+<script>
+/* movil en vertical: giramos el juego para que se vea siempre en horizontal */
+var ROT=false,RW=0;
+(function(){var cx=Object.getOwnPropertyDescriptor(MouseEvent.prototype,'clientX'),cy=Object.getOwnPropertyDescriptor(MouseEvent.prototype,'clientY');
+ Object.defineProperty(MouseEvent.prototype,'clientX',{configurable:true,get:function(){return ROT?cy.get.call(this):cx.get.call(this)}});
+ Object.defineProperty(MouseEvent.prototype,'clientY',{configurable:true,get:function(){return ROT?RW-cx.get.call(this):cy.get.call(this)}});
+ var gb=Element.prototype.getBoundingClientRect;Element.prototype.getBoundingClientRect=function(){var r=gb.call(this);if(!ROT)return r;var L=r.top,T=RW-r.right,R=r.bottom,B=RW-r.left;return{left:L,top:T,right:R,bottom:B,width:R-L,height:B-T,x:L,y:T,toJSON:function(){return this}}};})();
+function applyRot(){var v=window.visualViewport,w=v?v.width:innerWidth,h=v?v.height:innerHeight,p=h>w*1.05;ROT=p;RW=w;var de=document.documentElement,b=document.body;de.classList.toggle('rot',p);if(!b)return;if(p){b.style.width=h+'px';b.style.height=w+'px'}else{b.style.width='';b.style.height=''}}
+</script>
 <script>
 {
 const $=id=>document.getElementById(id);
@@ -1043,7 +1056,7 @@ function slideDown(c,f){if(c.sit!=f.id)return;SND.whee();say('\u00a1Uiiiii!');co
 let scale=1;
 let SW=1600,OFF=0;
 function fitSvg(){const sv=bg.firstElementChild;if(sv&&sv.tagName.toLowerCase()==='svg'){sv.setAttribute('viewBox',`${-OFF} 0 ${SW} 900`);sv.setAttribute('preserveAspectRatio','xMidYMid slice')}const ms=mapL.firstElementChild;if(ms&&ms.tagName.toLowerCase()==='svg')setCam(camX)}
-function vpSize(){const v=window.visualViewport;const w=v?v.width:innerWidth,h=v?v.height:innerHeight;let W2=Math.min(w,document.documentElement.clientWidth||w),H2=Math.min(h,document.documentElement.clientHeight||h);try{const a=screen.width,b=screen.height;if(a>0&&b>0){const sh=Math.min(a,b),lg=Math.max(a,b);if(W2>H2){H2=Math.min(H2,sh);W2=Math.min(W2,lg)}else{H2=Math.min(H2,lg);W2=Math.min(W2,sh)}}}catch(e){}return{w:W2,h:H2}}
+function vpSize(){applyRot();if(ROT){const v=window.visualViewport;const w=v?v.width:innerWidth,hh=v?v.height:innerHeight;return{w:hh,h:w}}const v=window.visualViewport;const w=v?v.width:innerWidth,h=v?v.height:innerHeight;let W2=Math.min(w,document.documentElement.clientWidth||w),H2=Math.min(h,document.documentElement.clientHeight||h);try{const a=screen.width,b=screen.height;if(a>0&&b>0){const sh=Math.min(a,b),lg=Math.max(a,b);if(W2>H2){H2=Math.min(H2,sh);W2=Math.min(W2,lg)}else{H2=Math.min(H2,lg);W2=Math.min(W2,sh)}}}catch(e){}return{w:W2,h:H2}}
 function fit(){if(typeof SR!=='undefined')SR=null;const V=vpSize(),innerWidth=V.w,innerHeight=V.h;SW=Math.round(Math.min(2200,Math.max(1600,900*innerWidth/innerHeight)));OFF=(SW-1600)/2;scale=Math.min(innerWidth/SW,innerHeight/900);
  stage.style.width=SW+'px';stage.style.transform=`translate(${(innerWidth-SW*scale)/2}px,${Math.max(0,(innerHeight-900*scale)/2)}px) scale(${scale})`;
  for(const id of ['objs','light']){const e=$(id);e.style.left=OFF+'px';e.style.width='1600px';e.style.right='auto'}
