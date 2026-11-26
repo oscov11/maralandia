@@ -499,6 +499,11 @@ html.rot,html.rot body{inset:auto!important;left:0!important;top:0!important}
 html.rot body{transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
 html.rot #rot{display:none!important}
 #rot{z-index:999999!important}
+#bVoz{position:absolute;left:430px;top:30px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.6);display:none;align-items:center;justify-content:center;pointer-events:auto;z-index:5}#bVoz svg{width:62%;height:62%}
+.sbub{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translateX(-50%);max-width:440px;width:max-content;padding:12px 22px;border-radius:26px;background:#fff;box-shadow:0 0 0 4px #58434f,0 8px 0 4px rgba(60,40,30,.15);font:700 30px Fredoka,Arial Rounded MT Bold,Arial,sans-serif;color:#58434f;text-align:center;pointer-events:none;z-index:5;animation:sbub .25s cubic-bezier(.3,1.6,.5,1)}
+.sbub::after{content:'';position:absolute;left:50%;bottom:-16px;margin-left:-12px;border:12px solid transparent;border-top:16px solid #58434f}
+@keyframes sbub{from{transform:translateX(-50%) scale(.3);opacity:0}}
+.obj.talking .in>svg{animation:talkb .22s ease-in-out infinite alternate!important}@keyframes talkb{from{transform:translateY(0)}to{transform:translateY(-5px) scale(1.01,.99)}}
 </style>
 </head>
 <body>
@@ -1100,7 +1105,7 @@ function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage
 }
 function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);d.el&&d.el.classList.remove('press');if(!drags.size)document.body.classList.remove('dragging');
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
- if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else if(c.name==='Vincent')vincentTalk(c);else say(c.name==='Mara'?pick(['\u00a1Hola, soy Mara!','\u00a1Jijiji!','\u00a1Qu\u00e9 divertido!','\u00a1Vamos a jugar!']):pick(['\u00a1Hola!','\u00a1Jijiji!','\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!']));if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){TAPP={x:d.sx,y:d.sy};t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
+ if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else charTalk(c);if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){TAPP={x:d.sx,y:d.sy};t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
  if(d.near){d.near._eat=false;draw(d.near)}
  if(d.o._lift){d.o._lift=0;d.el.classList.remove('dangle');if(els.has(d.o.id))draw(d.o)}
@@ -1880,13 +1885,13 @@ function introOpen(){const el=$('intro');const flakes=Array.from({length:40},()=
  <div class="isave" id="iSave"></div>`;el.classList.add('open');introSave()}
 function introSave(){const e=$('iSave');if(!e)return;e.textContent=cloudState==='ok'?'\u2601 Partida guardada':cloudState==='err'?'Jugando sin conexi\u00f3n':API?'Cargando partida\u2026':''}
 $('intro').addEventListener('pointerdown',e=>{if(!e.target.closest('#iPlay'))return;e.stopPropagation();ac();tryFS();SND.fanfare();
- const el=$('intro');el.classList.add('go');musicSet(W.song||'navidad');setTimeout(()=>say('\u00a1Hola Mara! \u00a1Bienvenida a Maralandia!',1),500);setTimeout(()=>{el.classList.remove('open','go');el.innerHTML=''},900)});
+ const el=$('intro');el.classList.add('go');musicSet(W.song||'navidad');setTimeout(()=>{GREETED=true;const hr=new Date().getHours();say((hr<13?'\u00a1Buenos d\u00edas':hr<21?'\u00a1Buenas tardes':'\u00a1Buenas noches')+', Mara! \u00a1Bienvenida a Maralandia!',1)},500);setTimeout(()=>{el.classList.remove('open','go');el.innerHTML=''},900)});
 
 function puff(x,y){for(let i=0;i<4;i++){const e=document.createElement('div');e.className='puff';e.style.left=(x+OFF+(i-1.5)*24)+'px';e.style.top=(y-6)+'px';e.style.setProperty('--dx',((i-1.5)*30)+'px');stage.appendChild(e);setTimeout(()=>e.remove(),520)}}
 document.addEventListener('pointerdown',e=>{const r=stage.getBoundingClientRect();const x=(e.clientX-r.left)/scale,y=(e.clientY-r.top)/scale;if(x<0||y<0||x>SW||y>900)return;
  const ring=document.createElement('div');ring.className='tapfx';ring.style.left=x+'px';ring.style.top=y+'px';stage.appendChild(ring);setTimeout(()=>ring.remove(),470);
  for(let i=0;i<3;i++){const s=document.createElement('div');s.className='tapst';s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*6.28;s.style.setProperty('--dx',Math.cos(a)*70+'px');s.style.setProperty('--dy',Math.sin(a)*70+'px');stage.appendChild(s);setTimeout(()=>s.remove(),620)}},true);
-const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;mb.style.display=m;if(m==='none')$('musPick').classList.remove('open');bMail.style.display=m;bAlb.style.display=m;bPet.style.display=m;mTitle.style.display=m;arrUI();bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
+const syncReset=()=>{const m=W.cur==='map'?'flex':'none';rs.style.display=m;mu.style.display=m;cb.style.display=m;mb.style.display=m;if(m==='none')$('musPick').classList.remove('open');bMail.style.display=m;bAlb.style.display=m;bPet.style.display=m;bVoz.style.display=m;mTitle.style.display=m;arrUI();bMail.classList.toggle('has',!!advPending());requestAnimationFrame(syncReset)};
 
 /* ---------- mi mascota ---------- */
 const PETKINDS=['perro','gato','conejo','hamster','pinguino','nutria'];
@@ -2476,7 +2481,50 @@ HINTS.plaza.push(['tap','puestoCastanas','\u00a1Pide casta\u00f1as en el puesto!
 const GARL=`<div class="xgarl"><svg viewBox="0 0 1600 90" preserveAspectRatio="none"><path d="M0 8 Q100 60 200 8 Q300 60 400 8 Q500 60 600 8 Q700 60 800 8 Q900 60 1000 8 Q1100 60 1200 8 Q1300 60 1400 8 Q1500 60 1600 8" fill="none" stroke="#2f7d4a" stroke-width="16" stroke-linecap="round"/><path d="M0 8 Q100 60 200 8 Q300 60 400 8 Q500 60 600 8 Q700 60 800 8 Q900 60 1000 8 Q1100 60 1200 8 Q1300 60 1400 8 Q1500 60 1600 8" fill="none" stroke="#3f9d64" stroke-width="8" stroke-linecap="round" stroke-dasharray="2 10"/>${Array.from({length:32},(_,i)=>{const x=25+i*50,t=(x%200)/200,y=8+Math.sin(t*Math.PI)*52*0.96;return `<circle class="tw2" style="animation-delay:-${(i*.23)%1}s" cx="${x}" cy="${(y+10).toFixed(1)}" r="7" fill="${['#ff5a5a','#ffd23f','#4fa3ff','#6fd86f','#ff8fc8'][i%5]}" stroke="#4a3b36" stroke-width="2"/>`}).join('')}${[0,400,800,1200,1600].map(x=>`<g transform="translate(${x},10)"><path d="M0 0 L-16 -10 L-16 10Z M0 0 L16 -10 L16 10Z" fill="#e23b3b" stroke="#4a3b36" stroke-width="3"/><circle r="5" fill="#e23b3b" stroke="#4a3b36" stroke-width="2"/></g>`).join('')}</svg></div>`;
 ['casa','cocina','dormitorio','bano','cole','pelu','tienda','vet','estudio','super','colores','torre','granja'].forEach(n=>{LIGHT[n]=(LIGHT[n]||'<div class="vig"></div>')+GARL});
 const SLEIGH=`<g class="sleigh"><g transform="translate(0,150)"><path d="M-10 40 Q40 70 120 40" fill="none" stroke="#58434f" stroke-width="3"/>${[0,1,2].map(i=>`<g transform="translate(${-190+i*62},${28+i*4})"><ellipse cx="0" cy="0" rx="24" ry="12" fill="#b07a4f" stroke="#4a3b36" stroke-width="3"/><circle cx="24" cy="-14" r="10" fill="#b07a4f" stroke="#4a3b36" stroke-width="3"/><path d="M20 -24 l-4 -12 M28 -24 l4 -12" stroke="#8b5e3c" stroke-width="3"/><path d="M-12 8 l-4 14 M12 8 l4 14" stroke="#4a3b36" stroke-width="3"/>${i===2?'<circle cx="34" cy="-12" r="5" fill="#ff3b3b"/>':''}</g>`).join('')}<path d="M-30 30 H-170" stroke="#58434f" stroke-width="2"/><path d="M0 20 H90 Q110 20 110 0 V-10 H80 V8 H10 Q0 8 0 20Z" fill="#e23b3b" stroke="#4a3b36" stroke-width="4"/><path d="M-6 30 H100 Q114 30 116 22" fill="none" stroke="#ffd23f" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="-14" r="14" fill="#e23b3b" stroke="#4a3b36" stroke-width="3"/><circle cx="60" cy="-30" r="10" fill="#ffd9bf" stroke="#4a3b36" stroke-width="3"/><path d="M50 -24 Q60 -10 70 -24" fill="#fff"/><path d="M50 -36 Q60 -54 72 -38Z" fill="#e23b3b" stroke="#4a3b36" stroke-width="2"/><rect x="18" y="-16" width="26" height="22" rx="4" fill="#6fd86f" stroke="#4a3b36" stroke-width="3"/><rect x="26" y="-28" width="20" height="16" rx="3" fill="#4fa3ff" stroke="#4a3b36" stroke-width="3"/></g></g>`;
-load();ensureScenes();ensureMara();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
+/* ---------- voz mejor y dialogos ---------- */
+function vScore(v){let s=0;const n=v.name||'';if(/^es[-_]ES/i.test(v.lang))s+=4;else if(/^es/i.test(v.lang))s+=2;else return -99;
+ if(/premium|enhanced|mejorad|natural|neural|siri/i.test(n))s+=5;if(/google/i.test(n))s+=2;if(/m[o\u00f3]nica|paulina|marisol|helena|luc[i\u00ed]a|elvira|marta|isabel/i.test(n))s+=1;
+ if(/eloquence|compact|novelty|grandma|grandpa|abuel|rocko|shelley|flo\b|reed|sandy|eddy|bad news|bells|bubbles|jester|whisper|zarvox|trinoids|organ|albert|boing|cellos|superstar|wobble|good news/i.test(n))s-=8;return s}
+function esVoices(){try{return speechSynthesis.getVoices().filter(v=>vScore(v)>-99).sort((a,b)=>vScore(b)-vScore(a))}catch(e){return []}}
+pickVoice=function(){const vs=esVoices();VO=(W&&W.voiceName&&vs.find(v=>v.name===W.voiceName))||vs[0]||null};
+try{speechSynthesis.onvoiceschanged=()=>{pickVoice();pickVoiceEn()};pickVoice()}catch(e){}
+function mkU(t,pitch,rate){const u=new SpeechSynthesisUtterance(t);u.lang=VO?VO.lang:'es-ES';if(VO)u.voice=VO;u.rate=rate||.98;u.pitch=pitch||1.2;return u}
+say=function(t,force){if(W&&W.mute)return;const n=performance.now();if(!force&&n-lastSay<1200)return;lastSay=n;try{speechSynthesis.cancel();speechSynthesis.speak(mkU(t,1.2,.98))}catch(e){}};
+/* nombres para los amigos */
+const GNAMES=['Sof\u00eda','Luc\u00eda','Nora','Alba','Vega','Martina','Julia','Olivia','Carla','Emma'],BNAMES=['Lucas','Leo','Hugo','Teo','Mateo','Pablo','Dani','Bruno','Marco','Nico'];
+const isGirl=c=>/coleta|melena|largo|mono|trenza/.test((c.look&&c.look.hair)||'');
+function nameChars(){let i=0;for(const n in W.sc)(W.sc[n]||[]).forEach(o=>{if(o.k==='char'&&!o.name){const L2=isGirl(o)?GNAMES:BNAMES;o.name=L2[(o.id+i++)%L2.length]}})}
+function cPitch(c){if(!c)return 1.2;if(c.name==='Mara')return 1.4;if(c.name==='Vincent')return .85;if(c.name==='Cajera')return 1.05;return isGirl(c)?1.45:1.1}
+/* burbuja de dialogo + boca que se mueve */
+function bubble(c,t,ms){const el=els.get(c.id);if(!el)return;el.querySelectorAll('.sbub').forEach(b=>b.remove());const b=document.createElement('div');b.className='sbub';b.textContent=t;el.appendChild(b);el.classList.add('talking');
+ clearTimeout(el._bt);el._bt=setTimeout(()=>{b.remove();el.classList.remove('talking')},ms||Math.max(1600,t.length*75))}
+function talk(seq){if(W&&W.mute){seq.forEach(([c,t],i)=>setTimeout(()=>c&&bubble(c,t),i*1800));return}
+ try{speechSynthesis.cancel();lastSay=performance.now();let delay=0;seq.forEach(([c,t])=>{const u=mkU(t,cPitch(c),1);const d=delay;let shown=false;const show=()=>{if(shown)return;shown=true;if(c)bubble(c,t)};u.onstart=show;setTimeout(show,d+120);delay+=Math.max(1400,t.length*80);u.onend=()=>{const el=c&&els.get(c.id);if(el)setTimeout(()=>{el.classList.remove('talking')},150)};speechSynthesis.speak(u)})}catch(e){}}
+const SCLINES={casa:['\u00a1Me encanta esta casa!','\u00bfVemos la tele?','\u00a1Qu\u00e9 bien se est\u00e1 en casa!'],cocina:['\u00a1Tengo hambre! \u00bfCocinamos algo?','\u00a1Qu\u00e9 bien huele!'],dormitorio:['\u00a1Tengo sue\u00f1ito!','\u00bfMe lees un cuento?'],bano:['\u00a1A lavarse las manos!','\u00a1Me encantan las burbujas!'],
+ cole:['\u00a1Me encanta aprender!','\u00bfJugamos a las letras?','\u00a1Yo s\u00e9 contar hasta diez!'],parque:['\u00a1Al columpio!','\u00a1Mira cu\u00e1nta nieve!','\u00bfHacemos un mu\u00f1eco de nieve?'],playa:['\u00a1Qu\u00e9 calor! \u00bfNos ba\u00f1amos?','\u00a1Hacemos un castillo de arena!'],granja:['\u00a1Muuu! Jijiji','\u00bfRecogemos manzanas?'],
+ super:['\u00bfQu\u00e9 compramos?','\u00a1Yo quiero fruta!'],plaza:['\u00a1Qu\u00e9 \u00e1rbol tan bonito!','\u00a1Feliz Navidad!','\u00bfDecoramos el \u00e1rbol?'],pelu:['\u00a1Quiero un peinado nuevo!','\u00bfMe pintas el pelo de colores?'],vet:['\u00a1Hay que cuidar a los animales!'],colores:['\u00a1Pintamos de colores!','\u00bfDibujamos juntas?'],
+ balcon:['\u00a1Mira las luces!','\u00a1Cu\u00e1ntas estrellas!'],torre:['\u00a1Subimos al tercer piso!','\u00a1Esta casa es alt\u00edsima!'],tienda:['\u00a1Cu\u00e1ntos juguetes!'],estudio:['\u00a1Me gusta pintar como Vincent!']};
+const GEN=['\u00a1Me haces cosquillas!','\u00a1Vamos a jugar!','\u00a1Jijiji!','\u00a1Qu\u00e9 d\u00eda tan bonito!'];
+const CHATS=[(a,b)=>[[a,`\u00a1Hola, ${b.name}!`],[b,`\u00a1Hola, ${a.name}! \u00bfJugamos?`],[a,'\u00a1S\u00ed! \u00a1Qu\u00e9 bien!']],
+ (a,b)=>[[a,`${b.name}, \u00bfsabes qu\u00e9?`],[b,'\u00bfQu\u00e9?'],[a,'\u00a1Que eres mi amiga!'.replace('amiga',isGirl(b)?'amiga':'amigo')]],
+ (a,b)=>[[a,'\u00bfTienes hambre?'],[b,'\u00a1Mucha! \u00bfComemos algo rico?']],
+ (a,b)=>[[a,'\u00bfJugamos al escondite?'],[b,'\u00a1Vale! \u00a1Yo cuento! Uno, dos, tres...']],
+ (a,b)=>[[a,'\u00a1Me gusta tu ropa!'],[b,'\u00a1Gracias! \u00a1La eleg\u00ed en el probador!']]];
+const MET=new Set();
+function charTalk(c){if(!c.name){const L3=isGirl(c)?GNAMES:BNAMES;c.name=pick(L3)}if(c.name==='Vincent'){vincentTalk(c);return}if(c.name==='Cajera'){talk([[c,'\u00a1Hola! Mete la comida en el carro y paga en la caja.']]);return}
+ if(!MET.has(c.id)){MET.add(c.id);talk([[c,c.name==='Mara'?'\u00a1Hola! Soy Mara. \u00a1Vamos a jugar!':`\u00a1Hola, Mara! Me llamo ${c.name}.`]]);return}
+ const near=objs().filter(o=>o!==c&&o.k==='char'&&o.name&&o.name!=='Vincent'&&o.name!=='Cajera'&&Math.abs(o.x-c.x)<420);
+ if(near.length&&Math.random()<.45){const b=pick(near);cls(b,'jmp');talk(pick(CHATS)(c,b));return}
+ let L2=[];if(c.sit)L2.push('\u00a1Qu\u00e9 c\u00f3modo!','Aqu\u00ed sentadito se est\u00e1 muy bien.');if(c._bath)L2.push('\u00a1Qu\u00e9 agua tan calentita!');if(c.swim)L2.push('\u00a1Al agua, patos!');
+ L2=L2.concat(SCLINES[W.cur]||[],GEN);talk([[c,pick(L2)]])}
+/* saludo segun la hora al entrar */
+let GREETED=false;function greet(){if(GREETED)return;GREETED=true;const hr=new Date().getHours();setTimeout(()=>say((hr<13?'\u00a1Buenos d\u00edas':hr<21?'\u00a1Buenas tardes':'\u00a1Buenas noches')+', Mara! \u00bfA d\u00f3nde vamos hoy?',1),900)}
+/* boton para elegir la voz (padres) */
+const bVoz=document.createElement('div');bVoz.id='bVoz';bVoz.innerHTML=`<svg viewBox="0 0 60 60"><path d="M10 14 H50 Q54 14 54 18 V38 Q54 42 50 42 H26 L16 52 V42 H10 Q6 42 6 38 V18 Q6 14 10 14Z" fill="#58434f"/><circle cx="20" cy="28" r="4" fill="#fff"/><circle cx="30" cy="28" r="4" fill="#fff"/><circle cx="40" cy="28" r="4" fill="#fff"/></svg>`;$('stage').appendChild(bVoz);
+bVoz.addEventListener('pointerdown',e=>{e.stopPropagation();ac();const vs=esVoices();if(!vs.length){say('Hola',1);return}let i=vs.findIndex(v=>VO&&v.name===VO.name);i=(i+1)%vs.length;VO=vs[i];W.voiceName=VO.name;save();cls2(bVoz);try{speechSynthesis.cancel();speechSynthesis.speak(mkU('\u00a1Hola, Mara! \u00bfTe gusta esta voz?',1.2,.98))}catch(e){}});
+
+const goNow2=goNow;goNow=function(n){goNow2(n);if(n==='map')greet()};
+load();ensureScenes();ensureMara();nameChars();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
 </body>
