@@ -2837,7 +2837,7 @@ function build3D(T){
   {const p=tp2(sled.position.x,sled.position.z);if(!st.ride){rg.fillStyle='#e8433f';rg.fillRect(p[0]-4,p[1]-4,8,8)}}
   rg.restore();rg.lineWidth=6;rg.strokeStyle='#ffffff';rg.beginPath();rg.arc(R2,R2,R2-4,0,7);rg.stroke();
   const ya=st.yaw-cy;rg.save();rg.translate(R2,R2);rg.rotate(-ya+Math.PI);rg.fillStyle='#ff6b8b';rg.strokeStyle='#fff';rg.lineWidth=3;rg.beginPath();rg.moveTo(0,10);rg.lineTo(8,-8);rg.lineTo(0,-3);rg.lineTo(-8,-8);rg.closePath();rg.fill();rg.stroke();rg.restore()}
- function deliver(n){carry.g.parent.remove(carry.g);carry=null;giftsDone++;sticker('regalo1');SND.fanfare();sparks(new T.Vector3(n.x??n.g.position.x,2.5,n.z??n.g.position.z));giveCoins(1,$('w3stars'));
+ function deliver(n){carry.done=1;carry.g.parent.remove(carry.g);carry=null;setTimeout(w3save,50);giftsDone++;sticker('regalo1');SND.fanfare();sparks(new T.Vector3(n.x??n.g.position.x,2.5,n.z??n.g.position.z));giveCoins(1,$('w3stars'));
   if(n.tree){const g=giftMesh(...GC[(giftsDone+2)%6]);g.position.set(Math.cos(giftsDone*1.3)*3.2,0,Math.sin(giftsDone*1.3)*3.2);g.scale.setScalar(.8);S.add(g);say(pick(['\u00a1Qu\u00e9 bonito queda el \u00e1rbol!','\u00a1Otro regalo para el \u00e1rbol!']),1)}
   else{n.want=false;n.bub.visible=false;n.jump=1.2;n.dance=2;say(pick([`\u00a1Gracias, Mara! \u00a1Me encanta!`,`\u00a1Un regalo para m\u00ed! \u00a1Gracias, Mara!`,`\u00a1Hala, qu\u00e9 sorpresa! \u00a1Gracias!`]),1);w3msg(n.o.name+': \u00a1Gracias! \ud83c\udf81',2500)}
   if(GIFTS.every(G=>G.took)){setTimeout(()=>{sticker('regalos');party();SND.fanfare();giveCoins(2,$('w3stars'));say('\u00a1Has repartido todos los regalos! \u00a1Eres una Pap\u00e1 Noel genial!',1);w3msg('\ud83c\udf81 \u00a1Todos los regalos! +2',4000)},1800)}}
@@ -2900,7 +2900,7 @@ function build3D(T){
    if(q.t==='english')sayMix([['\u00a1Muy bien!','es'],[q.c[1],'en'],['es '+q.c[0]+'.','es']]);else if(q.t==='count')say(`\u00a1S\u00ed! \u00a1Hay ${NUMW&&NUMW[q.n]?NUMW[q.n].replace(/[\u00a1!]/g,'').toLowerCase():q.n}!`,1);else if(q.t==='letter')say(`\u00a1S\u00ed! ${q.w[0].toLowerCase()} empieza por ${q.w[0][0]}.`,1);else if(q.t==='sum')say(`\u00a1S\u00ed! ${NW[q.a]} m\u00e1s ${NW[q.b]} son ${NW[q.n]}.`,1);else if(q.t==='enword')sayMix([['\u00a1Muy bien!','es'],[q.w[0],'en'],['es '+q.w[1]+'.','es']]);else say(pick(['\u00a1Muy bien!','\u00a1Genial, Mara!','\u00a1Correcto!','\u00a1Eres una campeona!']),1);
    lRound++;lWait=2.6}
   else{q.miss=1;SND.boing();padMesh[i].position.y=.6;say(pick(['Uy, esa no. \u00a1Prueba otra!','\u00a1Casi! Mira otra vez.','Esa no es. \u00a1T\u00fa puedes!']),1)}}
- function lEnd(){lPlaying=false;LQ=null;const lv=LV();let up=0;if(lFirst>=4&&lv<3){W.owlLvl=lv+1;up=1}else if(lFirst<=1&&lv>1)W.owlLvl=lv-1;save();drawBoard();for(let i=0;i<4;i++)drawPad(i,{txt:'?'});SND.fanfare();party();giveCoins(2,$('w3stars'));learnDone=true;lCool=6;sticker('buho');
+ function lEnd(){lPlaying=false;LQ=null;const lv=LV();let up=0;if(lFirst>=4&&lv<3){W.owlLvl=lv+1;up=1}else if(lFirst<=1&&lv>1)W.owlLvl=lv-1;save();drawBoard();for(let i=0;i<4;i++)drawPad(i,{txt:'?'});SND.fanfare();party();giveCoins(2,$('w3stars'));learnDone=true;lCool=6;w3save();sticker('buho');
   if(up){setTimeout(()=>sticker('buho'+W.owlLvl),3200);say(`\u00a1Has terminado! \u00a1Y subes al nivel ${W.owlLvl}! La pr\u00f3xima vez, preguntas nuevas.`,1);w3msg(`\ud83e\udd89 \u00a1Nivel ${W.owlLvl}! +2`,4000)}
   else{say('\u00a1Has terminado el juego de aprender! \u00a1Qu\u00e9 lista eres! Vuelve cuando quieras.',1);w3msg('\ud83e\udd89 \u00a1Juego completado! +2',4000)}}
  drawBoard();for(let i=0;i<4;i++)drawPad(i,{txt:'?'});
@@ -2968,6 +2968,18 @@ function build3D(T){
   return L.length+(W.myObjs||[]).length}
  // estado del jugador
  const st={x:0,y:0,z:14,vy:0,yaw:Math.PI,cy:Math.PI,onG:true,got:0,walk:0,jumpQ:false};let joy={x:0,y:0},raf=0,last=0,camDrag=null;window.__w3=()=>({st,GIFTS,NPC,sled,P,R,S});
+
+ // ===== guardar el progreso del 3D (se renueva cada d\u00eda) =====
+ const today3=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+ function w3save(){W.w3={d:today3(),s:STARS.map((s,i)=>s.visible?-1:i).filter(i=>i>=0),g:GIFTS.map((G,i)=>G.done?i:-1).filter(i=>i>=0),n:NPC.map((n,i)=>n.want?-1:i).filter(i=>i>=0),l:learnDone?1:0,a:goalDone?1:0};save()}
+ let w3restored=false;
+ function w3restore(){if(w3restored)return;w3restored=true;const P3=W.w3;if(!P3)return;if(P3.d!==today3()){if((P3.s||[]).length||(P3.g||[]).length)setTimeout(()=>say('\u00a1Nuevo d\u00eda en Maralandia! Han vuelto las estrellas y los regalos.',1),6500);W.w3=null;save();return}
+  (P3.s||[]).forEach(i=>{if(STARS[i]){STARS[i].visible=false;st.got++}});$('w3n').textContent=st.got;
+  (P3.g||[]).forEach(i=>{const G=GIFTS[i];if(!G)return;G.took=true;G.done=1;if(G.g.parent)G.g.parent.remove(G.g);if(G.bl.parent)G.bl.parent.remove(G.bl);giftsDone++});
+  (P3.n||[]).forEach(i=>{const n=NPC[i];if(n){n.want=false;n.bub.visible=false}});if(P3.l)learnDone=true;if(P3.a)goalDone=true}
+ // c\u00e1mara que no se mete dentro de las cosas
+ let camF=1;function camHit(x,y,z){const r=Math.hypot(x,z);if(y<17.5&&r<7.4-y*.36)return true;for(const b of solids){if(x>b.x0-.35&&x<b.x1+.35&&z>b.z0-.35&&z<b.z1+.35&&y>b.y0-.2&&y<b.y1+.35)return true}return false}
+
  function groundAt(x,z,y){let g=0;for(const b of solids){if(x>b.x0-.3&&x<b.x1+.3&&z>b.z0-.3&&z<b.z1+.3&&b.y1<=y+.35&&b.y1>g)g=b.y1}return g}
  function blocked(x,z,y){for(const b of solids){if(x>b.x0-.4&&x<b.x1+.4&&z>b.z0-.4&&z<b.z1+.4&&y<b.y1-.35&&y+2.8>b.y0)return true}return false}
  function resize(){const w=host.clientWidth,h=host.clientHeight;R.setSize(w,h,false);R.domElement.style.width='100%';R.domElement.style.height='100%';cam.aspect=w/h;cam.updateProjectionMatrix()}
@@ -2991,11 +3003,11 @@ function build3D(T){
   P.position.set(st.x,st.y,st.z);let dy=st.yaw-P.rotation.y;while(dy>Math.PI)dy-=Math.PI*2;while(dy<-Math.PI)dy+=Math.PI*2;P.rotation.y+=dy*Math.min(1,dt*12);
   const sw=Math.sin(st.walk)*.7*(st.onG?1:.3),u=P.userData;u.legL.rotation.x=sw;u.legR.rotation.x=-sw;u.armL.rotation.x=-sw;u.armR.rotation.x=sw;if(st.act&&st.act.k==='sit'){u.legL.rotation.x=u.legR.rotation.x=-1.5;u.armL.rotation.x=u.armR.rotation.x=-.5}if(!st.onG){u.armL.rotation.z=-.6;u.armR.rotation.z=.6}else{u.armL.rotation.z=0;u.armR.rotation.z=0}
   if(!inRoom&&!camDrag&&mag>.08){let d=st.yaw-st.cy;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;if(Math.abs(d)<2.2)st.cy+=d*dt*1.2}
-  if(inRoom){const r=inRoom.r;cam.position.set(r.cx+(st.x-r.cx)*.35,12.5,r.cz+r.D2/2+9);cam.lookAt(r.cx+(st.x-r.cx)*.35,1.5,r.cz-1)}else{const cd=lPlaying?9.5:8.5,ch=lPlaying?5.2:4.2;cam.position.set(st.x-Math.sin(st.cy)*cd,st.y+ch,st.z-Math.cos(st.cy)*cd);cam.lookAt(st.x,st.y+(lPlaying?3.6:2),st.z)}ARROWS.forEach(a=>a.position.y=4.4+Math.sin(t/250)*.3);
-  const tt=t/1000;STARS.forEach(s=>{if(!s.visible)return;s.rotation.y=tt*2;s.position.y=1.4+Math.sin(tt*2+s.position.x)*.25;if(Math.hypot(s.position.x-st.x,s.position.z-st.z)<1.6&&Math.abs(st.y+1.2-s.position.y)<2.2){s.visible=false;sparks(s.position);st.got++;sticker('estrella1');$('w3n').textContent=st.got;SND.cling&&SND.cling();say(NUMW[st.got]||String(st.got),1);
+  if(inRoom){const r=inRoom.r;cam.position.set(r.cx+(st.x-r.cx)*.35,12.5,r.cz+r.D2/2+9);cam.lookAt(r.cx+(st.x-r.cx)*.35,1.5,r.cz-1)}else{const cd=lPlaying?9.5:8.5,ch=lPlaying?5.2:4.2,ty=st.y+(lPlaying?3.6:2),dx=-Math.sin(st.cy)*cd,dy=ch-(lPlaying?3.6:2),dz=-Math.cos(st.cy)*cd;let f=1;for(let k=2;k<=10;k++){const ff=k/10;if(camHit(st.x+dx*ff,ty+dy*ff,st.z+dz*ff)){f=Math.max(.25,(k-1.5)/10);break}}camF=f<camF?f:camF+(f-camF)*Math.min(1,dt*3);cam.position.set(st.x+dx*camF,ty+dy*camF,st.z+dz*camF);cam.lookAt(st.x,ty,st.z)}ARROWS.forEach(a=>a.position.y=4.4+Math.sin(t/250)*.3);
+  const tt=t/1000;STARS.forEach(s=>{if(!s.visible)return;s.rotation.y=tt*2;s.position.y=1.4+Math.sin(tt*2+s.position.x)*.25;if(Math.hypot(s.position.x-st.x,s.position.z-st.z)<1.6&&Math.abs(st.y+1.2-s.position.y)<2.2){s.visible=false;sparks(s.position);st.got++;w3save();sticker('estrella1');$('w3n').textContent=st.got;SND.cling&&SND.cling();say(NUMW[st.got]||String(st.got),1);
    if(st.got%5===0){giveCoins(1,$('w3stars'))}if(st.got===STARS.length){sticker('estrellas');SND.fanfare();party();say('\u00a1Has encontrado todas las estrellas! \u00a1Eres una campeona!',1);w3msg('\u2b50 \u00a1Todas las estrellas! \u2b50',4000)}}});
   topStar.rotation.y=tt;PHB.forEach(m=>m.visible=((Math.floor(tt*3)+m.userData.ph)%3)!==0);bulbs.forEach((b,i)=>b.visible=((Math.floor(tt*3)+i)%3)!==0);
-  if(!goalDone&&st.onG&&st.y>16&&Math.hypot(st.x-goal.position.x,st.z-goal.position.z)<2.2){goalDone=true;sticker('arbol3d');SND.fanfare();party();giveCoins(3,$('w3stars'));say('\u00a1Has subido hasta arriba del \u00e1rbol! \u00a1Bravo!',1);w3msg('\ud83c\udf84 \u00a1Arriba del todo! +3 monedas',4000)}
+  if(!goalDone&&st.onG&&st.y>16&&Math.hypot(st.x-goal.position.x,st.z-goal.position.z)<2.2){goalDone=true;sticker('arbol3d');w3save();SND.fanfare();party();giveCoins(3,$('w3stars'));say('\u00a1Has subido hasta arriba del \u00e1rbol! \u00a1Bravo!',1);w3msg('\ud83c\udf84 \u00a1Arriba del todo! +3 monedas',4000)}
   NPC.forEach(n=>{const d=Math.hypot(n.g.position.x-st.x,n.g.position.z-st.z);if(d<4){n.g.rotation.y=Math.atan2(st.x-n.g.position.x,st.z-n.g.position.z);if(!n.said){n.said=true;say(pick([`\u00a1Hola, Mara! Soy ${n.o.name}.`,`\u00a1Mara! \u00bfJugamos a buscar estrellas?`,`\u00a1Qu\u00e9 bien que hayas venido, Mara!`]),1);w3msg(n.o.name+': \u00a1Hola, Mara!')}}else if(d>10)n.said=false;n.g.position.y=Math.abs(Math.sin(tt*3+n.g.position.x))*.15});
   if(PET){const tx=st.x-Math.sin(st.yaw)*2,tz=st.z-Math.cos(st.yaw)*2;PET.position.x+=(tx-PET.position.x)*Math.min(1,dt*3);PET.position.z+=(tz-PET.position.z)*Math.min(1,dt*3);PET.position.y=groundAt(PET.position.x,PET.position.z,st.y)+Math.abs(Math.sin(tt*8))*.2;PET.rotation.y=Math.atan2(st.x-PET.position.x,st.z-PET.position.z)}
   const sa=sn.attributes.position;for(let i=0;i<SNN;i++){let y=sa.array[i*3+1]-dt*3;if(y<0)y=40;sa.array[i*3+1]=y}sa.needsUpdate=true;
@@ -3050,7 +3062,7 @@ function build3D(T){
  $('w3jump').addEventListener('pointerdown',e=>{e.stopPropagation();st.jumpQ=true});
  host.addEventListener('pointerdown',e=>{camDrag={id:e.pointerId,x:e.clientX,c:st.cy}});
  addEventListener('keydown',e=>{if(!w3el.classList.contains('open'))return;if(e.key===' ')st.jumpQ=true});
- return {start(){try{const n=buildMade();if(n>(W.made3d||0)){W.made3d=n;save();setTimeout(()=>say('\u00a1Mira! Tus creaciones del taller est\u00e1n en tu casa y delante de ella.',1),5200)}}catch(e){console.warn(e)}resize();last=0;cancelAnimationFrame(raf);raf=requestAnimationFrame(step);addEventListener('resize',resize)},stop(){cancelAnimationFrame(raf);removeEventListener('resize',resize)}}}
+ return {start(){try{w3restore()}catch(e){console.warn(e)}try{const n=buildMade();if(n>(W.made3d||0)){W.made3d=n;save();setTimeout(()=>say('\u00a1Mira! Tus creaciones del taller est\u00e1n en tu casa y delante de ella.',1),5200)}}catch(e){console.warn(e)}resize();last=0;cancelAnimationFrame(raf);raf=requestAnimationFrame(step);addEventListener('resize',resize)},stop(){cancelAnimationFrame(raf);removeEventListener('resize',resize)}}}
 // portal en el mapa
 const MAP3D=`<g class="loc" data-go="mundo3d"><ellipse cx="800" cy="604" rx="110" ry="14" fill="rgba(60,40,30,.18)"/>${['#ff5a5a','#ff9f43','#ffd23f','#6fd86f','#4fa3ff','#a06cff'].map((c,i)=>`<path d="M${712+i*9} 604 V500 A${88-i*9} ${88-i*9} 0 0 1 ${888-i*9} 500 V604" fill="none" stroke="${c}" stroke-width="10"/>`).join('')}<path d="M766 604 V506 A34 34 0 0 1 834 506 V604Z" fill="#7e7bff" stroke="#4a3b36" stroke-width="5"/><text x="800" y="560" text-anchor="middle" font-size="34" ${FONT} fill="#fff" stroke="#4a3b36" stroke-width="5" paint-order="stroke">3D</text><path d="M704 604 V498 A96 96 0 0 1 896 498 V604" fill="none" stroke="#4a3b36" stroke-width="5"/></g>`;
 PLACE.mundo3d='\u00a1Maralandia en 3D!';
@@ -3354,6 +3366,12 @@ Object.assign(VALN,{lazo:'lazo',reno:'cuernos de reno',flor:'flor',bufanda:'bufa
 STK.push(['disenadora','dise\u00f1adora de moda','Dise\u00f1a una camiseta en el taller.','#ffd6f0','<path d="M40 22 Q50 34 60 22 L76 22 L90 36 L80 48 L72 42 V80 H28 V42 L20 48 L10 36 L24 22Z" fill="#ff8fc8" stroke="#4a3b36" stroke-width="4" stroke-linejoin="round"/><path d="M50 46 L54 56 L64 56 L56 62 L59 72 L50 66 L41 72 L44 62 L36 56 L46 56Z" fill="#ffd23f"/>'],
  ['mascota2','mascota con estilo','Ponle un gorro o un collar a tu mascota.','#e6ffdc','<circle cx="50" cy="58" r="24" fill="#c98a4b" stroke="#4a3b36" stroke-width="4"/><path d="M30 38 Q34 14 52 12 Q46 24 70 38Z" fill="#e8433f" stroke="#4a3b36" stroke-width="3"/><rect x="28" y="34" width="44" height="8" rx="4" fill="#fff" stroke="#4a3b36" stroke-width="3"/><circle cx="42" cy="58" r="4" fill="#3a2b27"/><circle cx="58" cy="58" r="4" fill="#3a2b27"/>']);
 STK.slice(-2).forEach(s=>STKM[s[0]]=s);
+
+/* ---------- Navidad en la granja y en la playa ---------- */
+if(typeof BG!=='undefined'&&BG.granja&&!/data-xg/.test(BG.granja))BG.granja=BG.granja.replace(/<\/svg>\s*$/,'')+'';
+const goNow5=goNow;goNow=function(n){goNow5(n);if(n==='granja'){try{const sv=bg.querySelector('svg');sv&&sv.insertAdjacentHTML('beforeend','<g data-xg="1"><rect x="-300" y="610" width="2200" height="300" fill="#ffffff" opacity=".6"/><path d="M-300 616 Q100 592 400 612 T1000 606 T1600 614 T1900 606 V640 H-300Z" fill="#ffffff" opacity=".8"/><path d="M136 404 L326 258 L522 404 L508 418 Q470 396 440 400 Q400 360 326 280 Q260 350 220 352 Q190 380 150 418Z" fill="#fff"/></g>')}catch(e){}snowOn=true}
+ if((n==='granja'||n==='playa')&&!(W.xmasDone||{})[n]){W.xmasDone=W.xmasDone||{};W.xmasDone[n]=1;const L2=n==='granja'?[['renoFig',1180,760],['arbolLuces',1420,760],['pilaRegalos',1300,780],['munecoNieve',220,780]]:[['arbolLuces',1420,780],['papaNoelFig',620,800],['pilaRegalos',1040,800]];
+  setTimeout(()=>{L2.forEach(([k,x,y])=>{if(!K[k])return;try{const o=spawn(k,x,y);settle(o)}catch(e){}});save();say(n==='granja'?'\u00a1Ha llegado la Navidad a la granja! \u00a1Mira, un reno!':'\u00a1Navidad en la playa! \u00a1Pap\u00e1 Noel ha venido de vacaciones!',1)},500)}};
 addEventListener('contextmenu',e=>e.preventDefault());load();regMine();regMade();regShirts();ensureScenes();ensureMara();nameChars();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
