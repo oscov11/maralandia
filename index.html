@@ -618,7 +618,7 @@ const rnd=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.len
 
 /* ---------- sonido ---------- */
 let AC=null;
-function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();}catch(e){}return AC}
+function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='closed')AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state!=='running'){const pr=AC.resume();pr&&pr.catch&&pr.catch(()=>{})}}catch(e){}return AC}
 function tone(f1,f2,d,type='sine',v=.18,delay=0,lp=0){if(typeof W!=='undefined'&&W&&W.mute)return;const a=ac();if(!a)return;const t=a.currentTime+delay;const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(Math.max(f2,30),t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+d);let n=o;if(lp){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=lp;o.connect(f);n=f}n.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05)}
 const SND={
  pop:()=>tone(500,900,.09),
@@ -1107,7 +1107,7 @@ if(window.visualViewport)visualViewport.addEventListener('resize',fit);
 addEventListener('orientationchange',()=>[100,350,800].forEach(t=>setTimeout(fit,t)));
 [300,1000].forEach(t=>setTimeout(fit,t));
 const toStage=e=>{const r=stageRect();return{x:(e.clientX-r.left)/scale-OFF,y:(e.clientY-r.top)/scale}};
-const over=(e,id)=>{const r=(id==='bTrash'||id==='bPocket')?btnRects()[id]:$(id).getBoundingClientRect();return e.clientX>r.left-20&&e.clientX<r.right+20&&e.clientY>r.top-20&&e.clientY<r.bottom+20};
+const over=(e,id)=>{if(e&&e.fake)return false;const r=(id==='bTrash'||id==='bPocket')?btnRects()[id]:$(id).getBoundingClientRect();return e.clientX>r.left-20&&e.clientX<r.right+20&&e.clientY>r.top-20&&e.clientY<r.bottom+20};
 const drags=new Map();let lastChar=null,fsTried=false;
 function tryFS(){if(fsTried)return;fsTried=true;try{const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d)?.catch?.(()=>{});screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}
 function startDrag(e,o,el){for(const v of drags.values())if(v.o===o)return;
@@ -1141,6 +1141,7 @@ function pmHandle(e){const d=drags.get(e.pointerId);if(!d)return;const p=toStage
 }
 function endDrag(e){const q=pmQ.get(e.pointerId);if(q){pmQ.delete(e.pointerId);pmHandle(q)}const d=drags.get(e.pointerId);if(!d)return;drags.delete(e.pointerId);d.el&&d.el.classList.remove('press');if(!drags.size)document.body.classList.remove('dragging');
  if(d.paint){if(!d.noPaint){const c=boardCanvas(d.o);try{d.o.st.img=c.toDataURL()}catch(err){}save()}return}
+ if(!d.moved&&e.type==='pointercancel')return;
  if(!d.moved){const t=K[d.o.k].tap;if(d.o.petName&&W.pet&&d.o.k===W.pet.kind){SND.giggle();cls(d.o,'jmp');setTimeout(openPet,300)}else if(d.o.k==='char'){const c=d.o;SND.giggle();cls(c,'jmp');if(c._wish){askFor(c);return}if(c._sleep){c._sleep=false;draw(c);say('\u00a1Buenos d\u00edas!',1)}else charTalk(c);if(d.o.name==='Mara')burst(d.o.x,d.o.y-sz(d.o).h,'heart',3);}else if(t){TAPP={x:d.sx,y:d.sy};t(d.o);if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}else{SND.pop();cls(d.o,'wig');if(K[d.o.k].cat==='animal'){befriend(d.o);engTap(d.o)}}return}
  $('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot');d.el.classList.remove('lifted');
  if(d.near){d.near._eat=false;draw(d.near)}
@@ -3836,6 +3837,27 @@ const ensureScenes3=ensureScenes;ensureScenes=function(){ensureScenes3.apply(thi
 /* ---------- robustez: creaciones borradas / partida de la nube ---------- */
 function sanitizeW(){try{Object.keys(W.sc||{}).forEach(n=>{if(Array.isArray(W.sc[n]))W.sc[n]=W.sc[n].filter(o=>o&&(o.k==='char'||K[o.k]))});W.pocket=(W.pocket||[]).filter(o=>o&&(o.k==='char'||K[o.k]))}catch(e){}}
 const ensureScenes4=ensureScenes;ensureScenes=function(){try{regMine();regMade();regShirts()}catch(e){}ensureScenes4.apply(this,arguments);sanitizeW()};
+/* ---------- volver a la app: soltar toques colgados ---------- */
+const LIVEP=new Map();
+addEventListener('pointerdown',e=>{LIVEP.set(e.pointerId,{t:e.target,x:e.clientX,y:e.clientY})},true);
+addEventListener('pointermove',e=>{const q=LIVEP.get(e.pointerId);if(q){q.x=e.clientX;q.y=e.clientY}},true);
+['pointerup','pointercancel'].forEach(t=>addEventListener(t,e=>LIVEP.delete(e.pointerId),true));
+function freeTouches(){const L=[...LIVEP.entries()];LIVEP.clear();
+ L.forEach(([id,q])=>{try{const ev=new PointerEvent('pointercancel',{pointerId:id,bubbles:true,cancelable:true,clientX:q.x,clientY:q.y,isPrimary:true,pointerType:'touch'});ev.fake=1;(q.t&&q.t.isConnected?q.t:window).dispatchEvent(ev)}catch(e){}});
+ try{drags.forEach(d=>{if(d.el)d.el.classList.remove('press','lifted','dangle');try{if(d.o&&els.has(d.o.id)){draw(d.o);settle(d.o)}}catch(e){}});drags.clear();pmQ.clear()}catch(e){}
+ document.body.classList.remove('dragging');
+ try{if(mDrag){if(mDrag.g)mDrag.g.classList.remove('lpress');mDrag=null}}catch(e){}
+ try{trayStart=null}catch(e){}
+ try{$('bTrash').classList.remove('hot');$('bPocket').classList.remove('hot')}catch(e){}
+ document.querySelectorAll('.press,.lpress').forEach(x=>x.classList.remove('press','lpress'))}
+let wakeT=0;
+function wake(){freeTouches();const n=performance.now();if(n-wakeT<800)return;wakeT=n;
+ try{if(AC&&AC.state!=='running'){const pr=AC.resume();pr&&pr.catch&&pr.catch(()=>{})}}catch(e){}
+ try{speechSynthesis.cancel();speechSynthesis.resume()}catch(e){}
+ SR=null;RB=null;[80,450,1200].forEach(t=>setTimeout(()=>{try{dispatchEvent(new Event('resize'))}catch(e){}},t))}
+document.addEventListener('visibilitychange',()=>{if(document.hidden){freeTouches();try{speechSynthesis.cancel()}catch(e){}}else wake()});
+addEventListener('pagehide',freeTouches);addEventListener('blur',freeTouches);
+addEventListener('pageshow',e=>{if(e.persisted)wake()});addEventListener('focus',()=>{if(!document.hidden)wake()});
 addEventListener('contextmenu',e=>e.preventDefault());load();regMine();regMade();regShirts();ensureScenes();ensureMara();nameChars();petDecay();petBadge();if(W.cur!=='map'&&!W.sc[W.cur])W.cur='map';lastContent=contentKey();muteUI();go('map');syncReset();musUI();introOpen();cloudPull();
 }
 </script>
